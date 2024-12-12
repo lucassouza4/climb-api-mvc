@@ -13,8 +13,8 @@ export class BoulderController {
 
     const result = await this.service.Create(name, difficulty, sector, city);
 
-    if (result instanceof Error) res.status(400).json(result.message).send();
-    else res.status(201).json(result).send();
+    if (result instanceof Error) res.status(400).json(result.message);
+    else res.status(201).json(result);
   }
 
   public async get(req: Request, res: Response) {
@@ -25,13 +25,13 @@ export class BoulderController {
 
       const result = await this.service.List(name, difficulty, sector, city);
 
-      if (result instanceof Error) res.status(400).json(result.message).send();
-      else res.status(200).json(result).send();
+      if (result instanceof Error) res.status(400).json(result.message);
+      else res.status(200).json(result);
     } else {
       const result = await this.service.Get(id);
 
-      if (result instanceof Error) res.status(400).json(result.message).send();
-      else res.status(200).json(result).send();
+      if (result instanceof Error) res.status(400).json(result.message);
+      else res.status(200).json(result);
     }
   }
 
@@ -39,11 +39,11 @@ export class BoulderController {
     const id = req.query.id as string;
 
     if (!id) {
-      res.status(400).json("ID precisa ser fornecido").send();
+      res.status(400).json("ID precisa ser fornecido");
     } else {
       const result = await this.service.IncreaseAscents(id);
-      if (result instanceof Error) res.status(400).json(result.message).send();
-      else res.status(200).json(result).send();
+      if (result instanceof Error) res.status(400).json(result.message);
+      else res.status(200).json(result);
     }
   }
 }
