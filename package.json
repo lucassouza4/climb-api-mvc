@@ -4,7 +4,7 @@
   "description": "API de uma aplicação voltada para escaladores",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --collect-coverage",
     "dev": "ts-node src/main.ts"
   },
   "prisma": {
@@ -17,13 +17,16 @@
     "@eslint/js": "^9.16.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.1",
     "globals": "^15.13.0",
+    "jest": "^29.7.0",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
     "prisma": "^6.0.1",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.18.0"

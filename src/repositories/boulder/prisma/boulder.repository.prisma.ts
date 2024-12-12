@@ -25,9 +25,9 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       return Boulder.With(
         newBoulder.id,
         newBoulder.name,
-        newBoulder.difficulty,
-        newBoulder.sector,
         newBoulder.city,
+        newBoulder.sector,
+        newBoulder.difficulty,
         newBoulder.ascents,
       );
     } catch (error: any) {
@@ -45,9 +45,9 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       return Boulder.With(
         boulder.id,
         boulder.name,
-        boulder.difficulty,
-        boulder.sector,
         boulder.city,
+        boulder.sector,
+        boulder.difficulty,
         boulder.ascents,
       );
     } catch (error: any) {
@@ -77,9 +77,9 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         return Boulder.With(
           element.id,
           element.name,
-          element.difficulty,
-          element.sector,
           element.city,
+          element.sector,
+          element.difficulty,
           element.ascents,
         );
       });
@@ -100,9 +100,9 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         return Boulder.With(
           element.id,
           element.name,
-          element.difficulty,
-          element.sector,
           element.city,
+          element.sector,
+          element.difficulty,
           element.ascents,
         );
       });
@@ -125,9 +125,9 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       return Boulder.With(
         updatedBoulder.id,
         updatedBoulder.name,
-        updatedBoulder.difficulty,
-        updatedBoulder.sector,
         updatedBoulder.city,
+        updatedBoulder.sector,
+        updatedBoulder.difficulty,
         updatedBoulder.ascents,
       );
     } catch (error: any) {

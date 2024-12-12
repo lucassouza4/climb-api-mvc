@@ -8,9 +8,7 @@ export type BoulderProps = {
 };
 
 export class Boulder {
-  private constructor(readonly props: BoulderProps) {
-    this.Validate();
-  }
+  private constructor(readonly props: BoulderProps) {}
 
   public static Create(
     name: string,
@@ -18,6 +16,9 @@ export class Boulder {
     city: string,
     difficulty: number,
   ) {
+    if (!this.Validate(difficulty)) {
+      return new Error("Dificuldade não pode ser menor que zero");
+    }
     return new Boulder({
       id: crypto.randomUUID().toString(),
       name: name.toUpperCase(),
@@ -31,17 +32,22 @@ export class Boulder {
   public static With(
     id: string,
     name: string,
-    difficulty: number,
-    sector: string,
     city: string,
+    sector: string,
+    difficulty: number,
     ascents: number,
   ) {
+    if (!this.Validate(difficulty, ascents)) {
+      return new Error(
+        "Dificuldade e quantidade de ascensões não podem ser menores que zero",
+      );
+    }
     return new Boulder({
       id,
       name,
-      difficulty,
-      sector,
       city,
+      sector,
+      difficulty,
       ascents,
     });
   }
@@ -70,20 +76,17 @@ export class Boulder {
     return this.props.ascents;
   }
 
-  public SetAscents() {
+  public IncrementAscents() {
     this.props.ascents += 1;
   }
 
-  private Validate() {
-    if (
-      this.props.name == null ||
-      this.props.sector == null ||
-      this.props.city == null
-    ) {
-      return new Error("nome, setor e cidade precisam ser fornecidos");
+  public static Validate(difficulty: number, ascents?: number) {
+    if (difficulty < 0) {
+      return false;
     }
-    if (this.props.difficulty < 0 || this.props.difficulty == null) {
-      return new Error("A dificuldade do boulder deve ser maior ou igual a V0");
+    if (ascents && ascents < 0) {
+      return false;
     }
+    return true;
   }
 }

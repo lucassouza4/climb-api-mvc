@@ -1,59 +1,48 @@
 import { Request, Response } from "express";
 import { BoulderUsecaseService } from "../../../services/boulder/usecase/boulder.usecase.service";
-import { prisma } from "../../../util/prisma.util";
-import { BoulderRepositoryPrisma } from "../../../repositories/boulder/prisma/boulder.repository.prisma";
 
 export class BoulderController {
-  private constructor() {}
+  private constructor(private readonly service: BoulderUsecaseService) {}
 
-  public static build() {
-    return new BoulderController();
+  public static build(service: BoulderUsecaseService) {
+    return new BoulderController(service);
   }
 
   public async create(req: Request, res: Response) {
-    const repository = BoulderRepositoryPrisma.build(prisma);
-    const service = BoulderUsecaseService.build(repository);
-
     const { name, city, sector, difficulty } = req.body;
 
-    const result = await service.Create(name, difficulty, sector, city);
+    const result = await this.service.Create(name, difficulty, sector, city);
 
     if (result instanceof Error) res.status(400).json(result.message).send();
     else res.status(201).json(result).send();
   }
 
   public async get(req: Request, res: Response) {
-    const repository = BoulderRepositoryPrisma.build(prisma);
-    const service = BoulderUsecaseService.build(repository);
-
     const id = req.query.id as string;
 
     if (id === undefined) {
       const { name, city, sector, difficulty } = req.body;
 
-      const result = await service.List(name, difficulty, sector, city);
+      const result = await this.service.List(name, difficulty, sector, city);
 
       if (result instanceof Error) res.status(400).json(result.message).send();
-      else res.status(200).json(result);
+      else res.status(200).json(result).send();
     } else {
-      const result = await service.Get(id);
+      const result = await this.service.Get(id);
 
-      if (result instanceof Error) res.status(400).json(result.message);
-      else res.status(200).json(result);
+      if (result instanceof Error) res.status(400).json(result.message).send();
+      else res.status(200).json(result).send();
     }
   }
 
   public async increase(req: Request, res: Response) {
-    const repository = BoulderRepositoryPrisma.build(prisma);
-    const service = BoulderUsecaseService.build(repository);
-
     const id = req.query.id as string;
 
     if (!id) {
-      res.status(400).json("ID precisa ser fornecido");
+      res.status(400).json("ID precisa ser fornecido").send();
     } else {
-      const result = await service.IncreaseAscents(id);
-      if (result instanceof Error) res.status(400).json(result.message);
+      const result = await this.service.IncreaseAscents(id);
+      if (result instanceof Error) res.status(400).json(result.message).send();
       else res.status(200).json(result).send();
     }
   }

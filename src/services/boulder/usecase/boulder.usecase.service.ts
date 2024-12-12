@@ -30,6 +30,10 @@ export class BoulderUsecaseService implements BoulderService {
     }
 
     const boulder = Boulder.Create(name, sector, city, difficulty);
+    if (boulder instanceof Error) {
+      return new Error(boulder.message);
+    }
+
     const savedBoulder = await this.repository.save(boulder);
 
     if (savedBoulder instanceof Error) {
@@ -77,7 +81,7 @@ export class BoulderUsecaseService implements BoulderService {
       return new Error(boulder.message);
     }
 
-    boulder.SetAscents();
+    boulder.IncrementAscents();
     const updatedBoulder = await this.repository.update(boulder);
     if (updatedBoulder instanceof Error) {
       return new Error(updatedBoulder.message);
