@@ -1,0 +1,36 @@
+{
+  "name": "climb-api-node",
+  "version": "1.0.0",
+  "description": "API de uma aplicação voltada para escaladores",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/main.ts"
+  },
+  "prisma": {
+    "schema": "./prisma/schema.prisma",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.57.1",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "prettier-eslint": "^16.3.0",
+    "prisma": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5",
+    "typescript-eslint": "^8.18.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
