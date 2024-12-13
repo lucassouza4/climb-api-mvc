@@ -1,5 +1,3 @@
-import { Boulder } from "@prisma/client";
-
 export type BoulderOutputDto = {
   id: string;
   name: string;
