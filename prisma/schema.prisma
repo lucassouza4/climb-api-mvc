@@ -25,3 +25,20 @@ model Boulder {
 
   @@map("Boulders")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  type      Type     @default(BASIC)
+  name      String
+  email     String   @unique
+  password  String
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime @updatedAt
+
+  @@map("Users")
+}
+
+enum Type {
+  BASIC
+  MASTER
+}

@@ -1,4 +1,4 @@
-import { Boulder } from "../../entities/boulder";
+import { Boulder } from "../../entities/boulder/boulder";
 
 export interface BoulderRepository {
   save(bouder: Boulder): Promise<Boulder | Error>;

@@ -1,6 +1,6 @@
 import { BoulderUsecaseService } from "./boulder.usecase.service";
 import { boulderRepositoryMock } from "../../../util/mocks/prismaClient";
-import { Boulder } from "../../../entities/boulder";
+import { Boulder } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import { secureHeapUsed } from "crypto";
 

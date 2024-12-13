@@ -10,7 +10,7 @@ export type BoulderProps = {
 export class Boulder {
   private constructor(readonly props: BoulderProps) {}
 
-  public static Create(
+  public static build(
     name: string,
     sector: string,
     city: string,

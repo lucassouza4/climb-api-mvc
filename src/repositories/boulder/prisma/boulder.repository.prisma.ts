@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client/extension";
-import { Boulder } from "../../../entities/boulder";
+import { Boulder } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../boulder.repository";
 
 export class BoulderRepositoryPrisma implements BoulderRepository {

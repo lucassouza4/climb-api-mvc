@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Type } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -63,6 +63,22 @@ async function main() {
     },
   ];
 
+  const users = [
+    {
+      id: "6f4e4591-eb3d-44bc-9c5c-1e497209c201",
+      type: Type.BASIC,
+      name: "Nakapa",
+      email: "nakapa@gmail.com",
+      password: "1234",
+    },
+    {
+      id: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+      type: Type.MASTER,
+      name: "4iTrinta",
+      email: "4iTrinta@gmail.com",
+      password: "123456",
+    },
+  ];
   // Inserindo os dados
   for (const boulder of boulders) {
     try {
@@ -71,6 +87,15 @@ async function main() {
       });
     } catch (error) {
       console.error(`Erro ao inserir boulder ${boulder.id}:`, error);
+    }
+  }
+  for (const user of users) {
+    try {
+      await prisma.user.create({
+        data: user,
+      });
+    } catch (error) {
+      console.error(`Erro ao inserir boulder ${user.id}:`, error);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Boulder } from "../../../entities/boulder";
+import { Boulder } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import {
   BoulderOutputDto,
@@ -29,7 +29,7 @@ export class BoulderUsecaseService implements BoulderService {
       return new Error("Boulder já cadastrado");
     }
 
-    const boulder = Boulder.Create(name, sector, city, difficulty);
+    const boulder = Boulder.build(name, sector, city, difficulty);
     if (boulder instanceof Error) {
       return new Error(boulder.message);
     }

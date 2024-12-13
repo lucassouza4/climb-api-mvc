@@ -1,4 +1,4 @@
-import { Boulder, BoulderProps } from "../boulder";
+import { Boulder, BoulderProps } from "../boulder/boulder";
 
 describe("Boulder entity test", () => {
   it("Should create a boulder with()", () => {
