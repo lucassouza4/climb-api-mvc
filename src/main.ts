@@ -1,8 +1,11 @@
 import { ApiExpress } from "./api/express/api.express";
+import { AscentController } from "./api/express/controllers/ascent.controller";
 import { BoulderController } from "./api/express/controllers/boulder.controller";
 import { UserController } from "./api/express/controllers/user.controller";
+import { AscentRepositoryPrisma } from "./repositories/ascent/prisma/ascent.repository.prisma";
 import { BoulderRepositoryPrisma } from "./repositories/boulder/prisma/boulder.repository.prisma";
 import { UserRepositoryPrisma } from "./repositories/user/prisma/user.repository.prisma";
+import { AscentUsecaseService } from "./services/ascent/usecase/ascent.usecase.service";
 import { BoulderUsecaseService } from "./services/boulder/usecase/boulder.usecase.service";
 import { UserUsecaseService } from "./services/user/usecase/user.usecase.service";
 import { prisma } from "./util/prisma.util";
@@ -18,22 +21,38 @@ function main() {
   const userService = UserUsecaseService.build(userRepository);
   const userController = UserController.build(userService);
 
+  const ascentRepository = AscentRepositoryPrisma.Build(prisma);
+  const ascentService = AscentUsecaseService.Build(
+    ascentRepository,
+    userRepository,
+    boulderRepository
+  );
+  const ascentController = AscentController.build(ascentService);
+
   apiExpress.addPostRoute(
     "/boulders/create",
-    boulderController.create.bind(boulderController),
+    boulderController.create.bind(boulderController)
   );
   apiExpress.addPostRoute(
+    "/user/ascents/create",
+    ascentController.create.bind(ascentController)
+  );
+  apiExpress.addPostRoute("/login", userController.login.bind(userController));
+  apiExpress.addPostRoute(
     "/users/create",
-    userController.create.bind(userController),
+    userController.create.bind(userController)
   );
   apiExpress.addGetRoute(
     "/boulders/",
-    boulderController.get.bind(boulderController),
+    boulderController.get.bind(boulderController)
   );
-  apiExpress.addGetRoute("/users/", userController.get.bind(userController));
+  apiExpress.addGetRoute(
+    "/user/ascents",
+    ascentController.get.bind(ascentController)
+  );
   apiExpress.addPutRoute(
     "/boulders/increase/",
-    boulderController.increase.bind(boulderController),
+    boulderController.increase.bind(boulderController)
   );
 
   apiExpress.start(8000);

@@ -79,6 +79,24 @@ async function main() {
       password: "123456",
     },
   ];
+
+  const ascents = [
+    {
+      id: "6f4e4591-eb3d-44bc-9c5c-1e497209c201",
+      userId: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+      boulderId: "6f4e4591-eb3d-44bc-9c5c-1e497209c201",
+    },
+    {
+      id: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+      userId: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+      boulderId: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+    },
+    {
+      id: "b19e247f-6edc-4ebf-bf75-c01a215819ba",
+      userId: "9385130c-3d7e-4005-99d2-f3f36ae41bb3",
+      boulderId: "b19e247f-6edc-4ebf-bf75-c01a215819ba",
+    },
+  ];
   // Inserindo os dados
   for (const boulder of boulders) {
     try {
@@ -96,6 +114,15 @@ async function main() {
       });
     } catch (error) {
       console.error(`Erro ao inserir boulder ${user.id}:`, error);
+    }
+  }
+  for (const ascent of ascents) {
+    try {
+      await prisma.ascent.create({
+        data: ascent,
+      });
+    } catch (error) {
+      console.error(`Erro ao inserir boulder ${ascent.id}:`, error);
     }
   }
 }

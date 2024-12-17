@@ -2,6 +2,7 @@ import { BasicUser } from "../../../entities/user/basicUser";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { UserOutputDto, UserService } from "../user.service";
 import { User } from "../../../entities/user/user";
+import jwt from "jsonwebtoken";
 
 export class UserUsecaseService implements UserService {
   private constructor(readonly repository: UserRepository) {}
@@ -13,9 +14,9 @@ export class UserUsecaseService implements UserService {
   public async create(
     name: string,
     email: string,
-    password: string,
+    password: string
   ): Promise<UserOutputDto | Error> {
-    const findedUser = await this.repository.get(email);
+    const findedUser = await this.repository.get(email, password);
     if (findedUser instanceof User) {
       return new Error("Usuário já cadastrado");
     }
@@ -28,23 +29,37 @@ export class UserUsecaseService implements UserService {
     if (savedUser instanceof Error) {
       return new Error("Não foi possível salvar o usuário");
     }
-
-    return this.presentOutput(savedUser);
+    const token = "teste";
+    return this.presentOutput(savedUser, token);
   }
 
-  public async get(email: string): Promise<UserOutputDto | Error> {
-    const findedUser = await this.repository.get(email);
+  public async login(
+    email: string,
+    password: string
+  ): Promise<UserOutputDto | Error> {
+    const findedUser = await this.repository.get(email, password);
     if (findedUser instanceof Error) {
       return new Error("Usuário não encontrado");
     }
-
-    return this.presentOutput(findedUser);
+    const jwtSecret = process.env.JWT_TOKEN;
+    if (!jwtSecret) {
+      return new Error("token não definido");
+    }
+    const token = jwt.sign(
+      {
+        id: findedUser.Id,
+        permissions: findedUser.getPermissions(),
+      },
+      jwtSecret
+      //{ expiresIn: 300 }
+    );
+    return this.presentOutput(findedUser, token);
   }
 
   update(
     name?: string,
     email?: string,
-    password?: string,
+    password?: string
   ): Promise<UserOutputDto | Error> {
     throw new Error("Method not implemented.");
   }
@@ -53,12 +68,12 @@ export class UserUsecaseService implements UserService {
     throw new Error("Method not implemented.");
   }
 
-  private presentOutput(user: User): UserOutputDto {
+  private presentOutput(user: User, token: string): UserOutputDto {
     const output: UserOutputDto = {
       id: user.Id,
       name: user.Name,
       email: user.Email,
-      permissions: user.getPermissions(),
+      token: token,
     };
     return output;
   }

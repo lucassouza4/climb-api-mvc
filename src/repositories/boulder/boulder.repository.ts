@@ -9,7 +9,7 @@ export interface BoulderRepository {
     sector?: string;
     difficulty?: number;
   }): Promise<Boulder[] | Error>;
-  getAll(): Promise<Boulder[] | Error>;
+  getAll(ids?: string[]): Promise<Boulder[] | Error>;
   update(boulder: Boulder): Promise<Boulder | Error>;
   delete(id: string): Promise<void | Error>;
 }

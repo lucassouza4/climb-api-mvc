@@ -17,11 +17,12 @@ export class UserController {
     else res.status(201).json(result);
   }
 
-  public async get(req: Request, res: Response) {
-    const email = req.query.email as string;
-    const result = await this.service.get(email);
+  public async login(req: Request, res: Response) {
+    const { email, password } = req.body;
 
-    if (result instanceof Error) res.status(400).json(result.message);
+    const result = await this.service.login(email, password);
+
+    if (result instanceof Error) res.status(401).json(result.message);
     else res.status(201).json(result);
   }
 }

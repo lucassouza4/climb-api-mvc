@@ -32,11 +32,28 @@ export class UserRepositoryPrisma implements UserRepository {
       return new Error(error.message);
     }
   }
-  public async get(email: string): Promise<User | Error> {
+  public async get(email: string, password: string): Promise<User | Error> {
     try {
       const findedUser = await this.prisma.user.findUnique({
         where: {
           email,
+          password,
+        },
+      });
+
+      if (findedUser.type == Type[Type.BASIC]) {
+        return BasicUser.with(findedUser.id, findedUser.name, findedUser.email);
+      }
+      return MasterUser.with(findedUser.id, findedUser.name, findedUser.email);
+    } catch (error: any) {
+      return new Error(error.message);
+    }
+  }
+  async getByID(id: string): Promise<User | Error> {
+    try {
+      const findedUser = await this.prisma.user.findUnique({
+        where: {
+          id,
         },
       });
 
@@ -51,7 +68,7 @@ export class UserRepositoryPrisma implements UserRepository {
   update(
     name?: string,
     email?: string,
-    password?: string,
+    password?: string
   ): Promise<User | Error> {
     throw new Error("Method not implemented.");
   }

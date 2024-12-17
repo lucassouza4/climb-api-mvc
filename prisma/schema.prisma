@@ -22,6 +22,7 @@ model Boulder {
   ascents    Int
   CreatedAt  DateTime @default(now())
   UpdatedAt  DateTime @updatedAt
+  ascentions Ascent[]
 
   @@map("Boulders")
 }
@@ -34,8 +35,21 @@ model User {
   password  String
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
+  ascents   Ascent[]
 
   @@map("Users")
+}
+
+model Ascent {
+  id        String   @id @default(uuid())
+  userId    String
+  boulderId String
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime @updatedAt
+  boulder   Boulder  @relation(fields: [boulderId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@map("Ascents")
 }
 
 enum Type {

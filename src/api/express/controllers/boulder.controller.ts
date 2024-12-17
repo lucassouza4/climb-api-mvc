@@ -21,7 +21,7 @@ export class BoulderController {
     const id = req.query.id as string;
 
     if (id === undefined) {
-      const { name, city, sector, difficulty } = req.body;
+      const { name, city, sector, difficulty } = req.body; // ERRADO
 
       const result = await this.service.List(name, difficulty, sector, city);
 

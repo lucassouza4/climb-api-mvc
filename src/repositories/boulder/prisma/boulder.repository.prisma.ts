@@ -28,7 +28,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         newBoulder.city,
         newBoulder.sector,
         newBoulder.difficulty,
-        newBoulder.ascents,
+        newBoulder.ascents
       );
     } catch (error: any) {
       return new Error(error.message);
@@ -48,7 +48,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         boulder.city,
         boulder.sector,
         boulder.difficulty,
-        boulder.ascents,
+        boulder.ascents
       );
     } catch (error: any) {
       return new Error(error.message);
@@ -80,17 +80,20 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
           element.city,
           element.sector,
           element.difficulty,
-          element.ascents,
+          element.ascents
         );
       });
     } catch (error: any) {
       return new Error(error.message);
     }
   }
-  public async getAll(): Promise<Boulder[] | Error> {
+  public async getAll(ids?: string[]): Promise<Boulder[] | Error> {
     // pagination
     try {
       const boulders = await this.prisma.boulder.findMany({
+        where: {
+          id: { in: ids },
+        },
         orderBy: {
           ascents: "desc",
         },
@@ -103,7 +106,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
           element.city,
           element.sector,
           element.difficulty,
-          element.ascents,
+          element.ascents
         );
       });
     } catch (error: any) {
@@ -128,7 +131,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         updatedBoulder.city,
         updatedBoulder.sector,
         updatedBoulder.difficulty,
-        updatedBoulder.ascents,
+        updatedBoulder.ascents
       );
     } catch (error: any) {
       return new Error(error.message);
