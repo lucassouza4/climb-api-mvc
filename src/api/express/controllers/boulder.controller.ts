@@ -47,5 +47,3 @@ export class BoulderController {
     }
   }
 }
-
-// Retirar repository e service daqui

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client/extension";
-import { Boulder } from "../../../entities/boulder/boulder";
+import { Boulder, BoulderProps } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../boulder.repository";
 
 export class BoulderRepositoryPrisma implements BoulderRepository {
@@ -30,8 +30,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         newBoulder.difficulty,
         newBoulder.ascents
       );
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async getByID(id: string): Promise<Boulder | Error> {
@@ -50,8 +53,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         boulder.difficulty,
         boulder.ascents
       );
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async get(query: {
@@ -73,7 +79,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         },
       });
 
-      return boulders.map((element: any) => {
+      return boulders.map((element: BoulderProps) => {
         return Boulder.with(
           element.id,
           element.name,
@@ -83,8 +89,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
           element.ascents
         );
       });
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async getAll(ids?: string[]): Promise<Boulder[] | Error> {
@@ -99,7 +108,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         },
       });
 
-      return boulders.map((element: any) => {
+      return boulders.map((element: BoulderProps) => {
         return Boulder.with(
           element.id,
           element.name,
@@ -109,8 +118,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
           element.ascents
         );
       });
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async update(boulder: Boulder): Promise<Boulder | Error> {
@@ -133,8 +145,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         updatedBoulder.difficulty,
         updatedBoulder.ascents
       );
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async delete(id: string): Promise<void | Error> {
@@ -142,8 +157,11 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       await this.prisma.boulder.delete({
         where: { id },
       });
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
 }

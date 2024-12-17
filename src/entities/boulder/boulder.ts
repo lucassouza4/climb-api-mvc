@@ -5,6 +5,8 @@ export type BoulderProps = {
   sector: string;
   difficulty: number;
   ascents: number;
+  CreatedAt?: Date;
+  UpdatedAt?: Date;
 };
 
 export class Boulder {

@@ -28,8 +28,11 @@ export class UserRepositoryPrisma implements UserRepository {
         return BasicUser.with(newUser.id, newUser.name, newUser.email);
       }
       return MasterUser.with(newUser.id, newUser.name, newUser.email);
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   public async get(email: string, password: string): Promise<User | Error> {
@@ -45,8 +48,11 @@ export class UserRepositoryPrisma implements UserRepository {
         return BasicUser.with(findedUser.id, findedUser.name, findedUser.email);
       }
       return MasterUser.with(findedUser.id, findedUser.name, findedUser.email);
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   async getByID(id: string): Promise<User | Error> {
@@ -61,8 +67,11 @@ export class UserRepositoryPrisma implements UserRepository {
         return BasicUser.with(findedUser.id, findedUser.name, findedUser.email);
       }
       return MasterUser.with(findedUser.id, findedUser.name, findedUser.email);
-    } catch (error: any) {
-      return new Error(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
     }
   }
   update(

@@ -18,28 +18,28 @@ export class ApiExpress implements Api {
 
   public addGetRoute(
     path: string,
-    handle: (req: Request, res: Response) => Promise<void>,
+    handle: (req: Request, res: Response) => Promise<void>
   ): void {
     this.app.get(path, handle);
   }
 
   public addPostRoute(
     path: string,
-    handle: (req: Request, res: Response) => Promise<void>,
+    handle: (req: Request, res: Response) => Promise<void>
   ): void {
     this.app.post(path, handle);
   }
 
   public addPutRoute(
     path: string,
-    handle: (req: Request, res: Response) => Promise<void>,
+    handle: (req: Request, res: Response) => Promise<void>
   ): void {
     this.app.put(path, handle);
   }
 
   public addDeleteRoute(
     path: string,
-    handle: (req: Request, res: Response) => Promise<void>,
+    handle: (req: Request, res: Response) => Promise<void>
   ): void {
     this.app.delete(path, handle);
   }
@@ -54,13 +54,17 @@ export class ApiExpress implements Api {
 
   private printRoutes() {
     console.log("Rotas registradas:");
-    this.app._router.stack.forEach((layer: any) => {
-      if (layer.route) {
-        const methods = Object.keys(layer.route.methods)
-          .join(", ")
-          .toUpperCase();
-        console.log(`${methods} ${layer.route.path}`);
+    this.app._router.stack.forEach(
+      (layer: {
+        route?: { methods: { [key: string]: boolean }; path: string };
+      }) => {
+        if (layer.route) {
+          const methods = Object.keys(layer.route.methods)
+            .join(", ")
+            .toUpperCase();
+          console.log(`${methods} ${layer.route.path}`);
+        }
       }
-    });
+    );
   }
 }
