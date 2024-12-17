@@ -13,15 +13,17 @@ export class MasterUser extends User {
       name,
       email,
       password,
+      score: 0,
     });
   }
 
-  public static with(id: string, name: string, email: string) {
+  public static with(id: string, name: string, email: string, score: number) {
     return new MasterUser({
       id,
       type: Type.MASTER,
       name,
       email,
+      score,
     });
   }
 

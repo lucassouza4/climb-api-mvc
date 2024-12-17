@@ -2,6 +2,7 @@ export type UserOutputDto = {
   id: string;
   name: string;
   email: string;
+  score: number;
   token: string;
 };
 

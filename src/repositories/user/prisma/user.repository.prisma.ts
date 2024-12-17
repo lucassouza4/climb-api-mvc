@@ -25,9 +25,19 @@ export class UserRepositoryPrisma implements UserRepository {
       });
 
       if (user.type == Type.BASIC) {
-        return BasicUser.with(newUser.id, newUser.name, newUser.email);
+        return BasicUser.with(
+          newUser.id,
+          newUser.name,
+          newUser.email,
+          newUser.score
+        );
       }
-      return MasterUser.with(newUser.id, newUser.name, newUser.email);
+      return MasterUser.with(
+        newUser.id,
+        newUser.name,
+        newUser.email,
+        newUser.score
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return new Error(error.message);
@@ -45,9 +55,19 @@ export class UserRepositoryPrisma implements UserRepository {
       });
 
       if (findedUser.type == Type[Type.BASIC]) {
-        return BasicUser.with(findedUser.id, findedUser.name, findedUser.email);
+        return BasicUser.with(
+          findedUser.id,
+          findedUser.name,
+          findedUser.email,
+          findedUser.score
+        );
       }
-      return MasterUser.with(findedUser.id, findedUser.name, findedUser.email);
+      return MasterUser.with(
+        findedUser.id,
+        findedUser.name,
+        findedUser.email,
+        findedUser.score
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return new Error(error.message);
@@ -64,9 +84,19 @@ export class UserRepositoryPrisma implements UserRepository {
       });
 
       if (findedUser.type == Type[Type.BASIC]) {
-        return BasicUser.with(findedUser.id, findedUser.name, findedUser.email);
+        return BasicUser.with(
+          findedUser.id,
+          findedUser.name,
+          findedUser.email,
+          findedUser.score
+        );
       }
-      return MasterUser.with(findedUser.id, findedUser.name, findedUser.email);
+      return MasterUser.with(
+        findedUser.id,
+        findedUser.name,
+        findedUser.email,
+        findedUser.score
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return new Error(error.message);

@@ -50,10 +50,6 @@ function main() {
     "/user/ascents",
     ascentController.get.bind(ascentController)
   );
-  apiExpress.addPutRoute(
-    "/boulders/increase/",
-    boulderController.increase.bind(boulderController)
-  );
 
   apiExpress.start(8000);
 }

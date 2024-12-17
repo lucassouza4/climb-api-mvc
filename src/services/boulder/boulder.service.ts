@@ -32,5 +32,4 @@ export interface BoulderService {
     city?: string
   ): Promise<ListBoulderOutputDto | Error>;
   get(id: string): Promise<BoulderOutputDto | Error>;
-  increaseAscents(id: string): Promise<BoulderOutputDto | Error>;
 }

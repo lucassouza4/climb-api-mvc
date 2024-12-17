@@ -69,6 +69,7 @@ async function main() {
       type: Type.BASIC,
       name: "Nakapa",
       email: "nakapa@gmail.com",
+      score: 0,
       password: "1234",
     },
     {
@@ -76,6 +77,7 @@ async function main() {
       type: Type.MASTER,
       name: "4iTrinta",
       email: "4iTrinta@gmail.com",
+      score: 140,
       password: "123456",
     },
   ];

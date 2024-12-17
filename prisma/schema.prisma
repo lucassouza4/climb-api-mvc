@@ -33,6 +33,7 @@ model User {
   name      String
   email     String   @unique
   password  String
+  score     Int
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
   ascents   Ascent[]

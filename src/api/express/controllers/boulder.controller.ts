@@ -34,16 +34,4 @@ export class BoulderController {
       else res.status(200).json(result);
     }
   }
-
-  public async increase(req: Request, res: Response) {
-    const id = req.query.id as string;
-
-    if (!id) {
-      res.status(400).json("ID precisa ser fornecido");
-    } else {
-      const result = await this.service.increaseAscents(id);
-      if (result instanceof Error) res.status(400).json(result.message);
-      else res.status(200).json(result);
-    }
-  }
 }

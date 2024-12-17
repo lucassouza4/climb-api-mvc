@@ -75,21 +75,6 @@ export class BoulderUsecaseService implements BoulderService {
     return this.presentOutput(boulder);
   }
 
-  public async increaseAscents(id: string): Promise<BoulderOutputDto | Error> {
-    const boulder = await this.repository.getByID(id);
-    if (boulder instanceof Error) {
-      return new Error(boulder.message);
-    }
-
-    boulder.incrementAscents();
-    const updatedBoulder = await this.repository.update(boulder);
-    if (updatedBoulder instanceof Error) {
-      return new Error(updatedBoulder.message);
-    }
-
-    return this.presentOutput(updatedBoulder);
-  }
-
   private presentOutput(boulder: Boulder): BoulderOutputDto {
     const boulderOutput: BoulderOutputDto = {
       id: boulder.id,

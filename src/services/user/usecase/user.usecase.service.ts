@@ -73,6 +73,7 @@ export class UserUsecaseService implements UserService {
       id: user.id,
       name: user.name,
       email: user.email,
+      score: user.score,
       token: token,
     };
     return output;
