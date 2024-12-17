@@ -14,9 +14,9 @@ export class Boulder {
     name: string,
     sector: string,
     city: string,
-    difficulty: number,
+    difficulty: number
   ) {
-    if (!this.Validate(difficulty)) {
+    if (!this.validate(difficulty)) {
       return new Error("Dificuldade não pode ser menor que zero");
     }
     return new Boulder({
@@ -29,17 +29,17 @@ export class Boulder {
     });
   }
 
-  public static With(
+  public static with(
     id: string,
     name: string,
     city: string,
     sector: string,
     difficulty: number,
-    ascents: number,
+    ascents: number
   ) {
-    if (!this.Validate(difficulty, ascents)) {
+    if (!this.validate(difficulty, ascents)) {
       return new Error(
-        "Dificuldade e quantidade de ascensões não podem ser menores que zero",
+        "Dificuldade e quantidade de ascensões não podem ser menores que zero"
       );
     }
     return new Boulder({
@@ -52,35 +52,35 @@ export class Boulder {
     });
   }
 
-  public get Id() {
+  public get id() {
     return this.props.id;
   }
 
-  public get Name() {
+  public get name() {
     return this.props.name;
   }
 
-  public get Sector() {
+  public get sector() {
     return this.props.sector;
   }
 
-  public get City() {
+  public get city() {
     return this.props.city;
   }
 
-  public get Difficulty() {
+  public get difficulty() {
     return this.props.difficulty;
   }
 
-  public get Ascents() {
+  public get ascents() {
     return this.props.ascents;
   }
 
-  public IncrementAscents() {
+  public incrementAscents() {
     this.props.ascents += 1;
   }
 
-  public static Validate(difficulty: number, ascents?: number) {
+  public static validate(difficulty: number, ascents?: number) {
     if (difficulty < 0) {
       return false;
     }

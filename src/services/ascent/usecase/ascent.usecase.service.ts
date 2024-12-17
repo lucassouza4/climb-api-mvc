@@ -14,7 +14,7 @@ export class AscentUsecaseService implements AscentService {
     readonly boulderRepository: BoulderRepository
   ) {}
 
-  public static Build(
+  public static build(
     ascentRepository: AscentRepository,
     userRepository: UserRepository,
     boulderRepository: BoulderRepository
@@ -26,7 +26,7 @@ export class AscentUsecaseService implements AscentService {
     );
   }
 
-  async Create(
+  async create(
     userId: string,
     boulderId: string,
     token: Payload
@@ -35,7 +35,7 @@ export class AscentUsecaseService implements AscentService {
     if (user instanceof Error) {
       return new Error("Usuário não encontrado");
     }
-    if (user.Id !== token.id) {
+    if (user.id !== token.id) {
       return new Error("Usuário não corresponde ao login");
     }
 
@@ -44,18 +44,18 @@ export class AscentUsecaseService implements AscentService {
       return new Error("Boulder não encontrado");
     }
 
-    const findedAscent = await this.ascentRepository.get(user.Id, boulder.Id);
+    const findedAscent = await this.ascentRepository.get(user.id, boulder.id);
     if (!(findedAscent instanceof Error)) {
       return new Error("Ascensão já existente");
     }
 
-    boulder.IncrementAscents();
+    boulder.incrementAscents();
     const incrementedBoulder = await this.boulderRepository.update(boulder);
     if (incrementedBoulder instanceof Error) {
       return new Error(incrementedBoulder.message);
     }
 
-    const ascent = Ascent.build(user.Id, incrementedBoulder.Id);
+    const ascent = Ascent.build(user.id, incrementedBoulder.id);
     if (ascent instanceof Error) {
       return new Error(ascent.message);
     }
@@ -65,9 +65,9 @@ export class AscentUsecaseService implements AscentService {
       return new Error(savedAscent.message);
     }
 
-    return this.PresentOutput(savedAscent);
+    return this.presentOutput(savedAscent);
   }
-  async Get(
+  async get(
     userId: string,
     token: Payload
   ): Promise<ListBoulderOutputDto | Error> {
@@ -75,7 +75,7 @@ export class AscentUsecaseService implements AscentService {
     if (user instanceof Error) {
       return new Error("Usuário não encontrado");
     }
-    if (user.Id !== token.id) {
+    if (user.id !== token.id) {
       return new Error("Usuário não corresponde ao login");
     }
 
@@ -85,7 +85,7 @@ export class AscentUsecaseService implements AscentService {
     }
 
     const bouldersList = ascents.map((ascent) => {
-      return ascent.BoulderId;
+      return ascent.boulderId;
     });
 
     const ascentsBoulders = await this.boulderRepository.getAll(bouldersList);
@@ -93,34 +93,34 @@ export class AscentUsecaseService implements AscentService {
       return new Error(ascentsBoulders.message);
     }
 
-    return this.ListPresentOutput(ascentsBoulders);
+    return this.listPresentOutput(ascentsBoulders);
   }
-  Update(id: string, token: Payload): Promise<AscentOutputDto | Error> {
+  update(id: string, token: Payload): Promise<AscentOutputDto | Error> {
     throw new Error("Method not implemented.");
   }
-  Delete(id: string, token: Payload): Promise<AscentOutputDto | Error> {
+  delete(id: string, token: Payload): Promise<AscentOutputDto | Error> {
     throw new Error("Method not implemented.");
   }
 
-  private PresentOutput(ascent: Ascent): AscentOutputDto {
+  private presentOutput(ascent: Ascent): AscentOutputDto {
     const ascentOutput: AscentOutputDto = {
-      id: ascent.Id,
-      userId: ascent.UserId,
-      boulderId: ascent.BoulderId,
+      id: ascent.id,
+      userId: ascent.userId,
+      boulderId: ascent.boulderId,
     };
     return ascentOutput;
   }
 
-  private ListPresentOutput(boulderList: Boulder[]): ListBoulderOutputDto {
+  private listPresentOutput(boulderList: Boulder[]): ListBoulderOutputDto {
     const ascentsOutput: ListBoulderOutputDto = {
       boulders: boulderList.map((boulder) => {
         return {
-          id: boulder.Id,
-          name: boulder.Name,
-          city: boulder.City,
-          sector: boulder.Sector,
-          difficulty: boulder.Difficulty,
-          ascents: boulder.Ascents,
+          id: boulder.id,
+          name: boulder.name,
+          city: boulder.city,
+          sector: boulder.sector,
+          difficulty: boulder.difficulty,
+          ascents: boulder.ascents,
         };
       }),
     };

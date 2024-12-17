@@ -16,7 +16,7 @@ export class AscentController {
     if (decodedToken instanceof Error) {
       res.status(401).json(decodedToken.message);
     } else {
-      const result = await this.service.Create(userId, boulderId, decodedToken);
+      const result = await this.service.create(userId, boulderId, decodedToken);
 
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(201).json(result);
@@ -30,7 +30,7 @@ export class AscentController {
     if (decodedToken instanceof Error) {
       res.status(401).json(decodedToken.message);
     } else {
-      const result = await this.service.Get(userId, decodedToken);
+      const result = await this.service.get(userId, decodedToken);
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(200).json(result);
     }

@@ -11,7 +11,7 @@ export class BoulderController {
   public async create(req: Request, res: Response) {
     const { name, city, sector, difficulty } = req.body;
 
-    const result = await this.service.Create(name, difficulty, sector, city);
+    const result = await this.service.create(name, difficulty, sector, city);
 
     if (result instanceof Error) res.status(400).json(result.message);
     else res.status(201).json(result);
@@ -23,12 +23,12 @@ export class BoulderController {
     if (id === undefined) {
       const { name, city, sector, difficulty } = req.body; // ERRADO
 
-      const result = await this.service.List(name, difficulty, sector, city);
+      const result = await this.service.list(name, difficulty, sector, city);
 
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(200).json(result);
     } else {
-      const result = await this.service.Get(id);
+      const result = await this.service.get(id);
 
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(200).json(result);
@@ -41,7 +41,7 @@ export class BoulderController {
     if (!id) {
       res.status(400).json("ID precisa ser fornecido");
     } else {
-      const result = await this.service.IncreaseAscents(id);
+      const result = await this.service.increaseAscents(id);
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(200).json(result);
     }

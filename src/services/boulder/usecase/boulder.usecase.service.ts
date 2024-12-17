@@ -13,11 +13,11 @@ export class BoulderUsecaseService implements BoulderService {
     return new BoulderUsecaseService(repository);
   }
 
-  public async Create(
+  public async create(
     name: string,
     difficulty: number,
     sector: string,
-    city: string,
+    city: string
   ): Promise<BoulderOutputDto | Error> {
     const findedBoulder = await this.repository.get({
       name,
@@ -39,14 +39,14 @@ export class BoulderUsecaseService implements BoulderService {
     if (savedBoulder instanceof Error) {
       return new Error(savedBoulder.message);
     }
-    return this.PresentOutput(savedBoulder);
+    return this.presentOutput(savedBoulder);
   }
 
-  public async List(
+  public async list(
     name?: string,
     difficulty?: number,
     sector?: string,
-    city?: string,
+    city?: string
   ): Promise<ListBoulderOutputDto | Error> {
     let boulders: Boulder[] | Error;
     if (
@@ -62,56 +62,56 @@ export class BoulderUsecaseService implements BoulderService {
     if (boulders instanceof Error) {
       return new Error(boulders.message);
     }
-    return this.PresentListOutput(boulders);
+    return this.presentListOutput(boulders);
   }
 
-  public async Get(id: string): Promise<BoulderOutputDto | Error> {
+  public async get(id: string): Promise<BoulderOutputDto | Error> {
     const boulder = await this.repository.getByID(id);
 
     if (boulder instanceof Error) {
       return new Error(boulder.message);
     }
 
-    return this.PresentOutput(boulder);
+    return this.presentOutput(boulder);
   }
 
-  public async IncreaseAscents(id: string): Promise<BoulderOutputDto | Error> {
+  public async increaseAscents(id: string): Promise<BoulderOutputDto | Error> {
     const boulder = await this.repository.getByID(id);
     if (boulder instanceof Error) {
       return new Error(boulder.message);
     }
 
-    boulder.IncrementAscents();
+    boulder.incrementAscents();
     const updatedBoulder = await this.repository.update(boulder);
     if (updatedBoulder instanceof Error) {
       return new Error(updatedBoulder.message);
     }
 
-    return this.PresentOutput(updatedBoulder);
+    return this.presentOutput(updatedBoulder);
   }
 
-  private PresentOutput(boulder: Boulder): BoulderOutputDto {
+  private presentOutput(boulder: Boulder): BoulderOutputDto {
     const boulderOutput: BoulderOutputDto = {
-      id: boulder.Id,
-      name: boulder.Name,
-      city: boulder.City,
-      sector: boulder.Sector,
-      difficulty: boulder.Difficulty,
-      ascents: boulder.Ascents,
+      id: boulder.id,
+      name: boulder.name,
+      city: boulder.city,
+      sector: boulder.sector,
+      difficulty: boulder.difficulty,
+      ascents: boulder.ascents,
     };
     return boulderOutput;
   }
 
-  private PresentListOutput(bouldersList: Boulder[]): ListBoulderOutputDto {
+  private presentListOutput(bouldersList: Boulder[]): ListBoulderOutputDto {
     const boulderOutput: ListBoulderOutputDto = {
       boulders: bouldersList.map((element) => {
         return {
-          id: element.Id,
-          name: element.Name,
-          city: element.City,
-          sector: element.Sector,
-          difficulty: element.Difficulty,
-          ascents: element.Ascents,
+          id: element.id,
+          name: element.name,
+          city: element.city,
+          sector: element.sector,
+          difficulty: element.difficulty,
+          ascents: element.ascents,
         };
       }),
     };

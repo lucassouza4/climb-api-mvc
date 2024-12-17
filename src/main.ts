@@ -21,8 +21,8 @@ function main() {
   const userService = UserUsecaseService.build(userRepository);
   const userController = UserController.build(userService);
 
-  const ascentRepository = AscentRepositoryPrisma.Build(prisma);
-  const ascentService = AscentUsecaseService.Build(
+  const ascentRepository = AscentRepositoryPrisma.build(prisma);
+  const ascentService = AscentUsecaseService.build(
     ascentRepository,
     userRepository,
     boulderRepository

@@ -14,19 +14,19 @@ export class Ascent {
     });
   }
 
-  public static With(id: string, userId: string, boulderId: string) {
+  public static with(id: string, userId: string, boulderId: string) {
     return new Ascent({ id, userId, boulderId });
   }
 
-  public get Id() {
+  public get id() {
     return this.props.id;
   }
 
-  public get UserId() {
+  public get userId() {
     return this.props.userId;
   }
 
-  public get BoulderId() {
+  public get boulderId() {
     return this.props.boulderId;
   }
 }

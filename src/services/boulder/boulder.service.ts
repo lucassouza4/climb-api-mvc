@@ -19,18 +19,18 @@ export type ListBoulderOutputDto = {
 };
 
 export interface BoulderService {
-  Create(
+  create(
     name: string,
     difficulty: number,
     sector: string,
-    city: string,
+    city: string
   ): Promise<BoulderOutputDto | Error>;
-  List(
+  list(
     name?: string,
     difficulty?: number,
     sector?: string,
-    city?: string,
+    city?: string
   ): Promise<ListBoulderOutputDto | Error>;
-  Get(id: string): Promise<BoulderOutputDto | Error>;
-  IncreaseAscents(id: string): Promise<BoulderOutputDto | Error>;
+  get(id: string): Promise<BoulderOutputDto | Error>;
+  increaseAscents(id: string): Promise<BoulderOutputDto | Error>;
 }

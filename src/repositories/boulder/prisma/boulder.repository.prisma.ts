@@ -13,16 +13,16 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
     try {
       const newBoulder = await this.prisma.boulder.create({
         data: {
-          name: boulder.Name,
-          ascents: boulder.Ascents,
-          city: boulder.City,
-          difficulty: boulder.Difficulty,
-          sector: boulder.Sector,
-          id: boulder.Id,
+          name: boulder.name,
+          ascents: boulder.ascents,
+          city: boulder.city,
+          difficulty: boulder.difficulty,
+          sector: boulder.sector,
+          id: boulder.id,
         },
       });
 
-      return Boulder.With(
+      return Boulder.with(
         newBoulder.id,
         newBoulder.name,
         newBoulder.city,
@@ -42,7 +42,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
         },
       });
 
-      return Boulder.With(
+      return Boulder.with(
         boulder.id,
         boulder.name,
         boulder.city,
@@ -74,7 +74,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       });
 
       return boulders.map((element: any) => {
-        return Boulder.With(
+        return Boulder.with(
           element.id,
           element.name,
           element.city,
@@ -100,7 +100,7 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
       });
 
       return boulders.map((element: any) => {
-        return Boulder.With(
+        return Boulder.with(
           element.id,
           element.name,
           element.city,
@@ -116,16 +116,16 @@ export class BoulderRepositoryPrisma implements BoulderRepository {
   public async update(boulder: Boulder): Promise<Boulder | Error> {
     try {
       const updatedBoulder = await this.prisma.boulder.update({
-        where: { id: boulder.Id },
+        where: { id: boulder.id },
         data: {
-          name: boulder.Name,
-          city: boulder.City,
-          sector: boulder.Sector,
-          difficulty: boulder.Difficulty,
-          ascents: boulder.Ascents,
+          name: boulder.name,
+          city: boulder.city,
+          sector: boulder.sector,
+          difficulty: boulder.difficulty,
+          ascents: boulder.ascents,
         },
       });
-      return Boulder.With(
+      return Boulder.with(
         updatedBoulder.id,
         updatedBoulder.name,
         updatedBoulder.city,

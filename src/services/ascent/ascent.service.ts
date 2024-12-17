@@ -4,12 +4,12 @@ import { ListBoulderOutputDto } from "../boulder/boulder.service";
 export type AscentOutputDto = { id: string; userId: string; boulderId: string };
 
 export interface AscentService {
-  Create(
+  create(
     userId: string,
     boulderId: string,
     token: Payload
   ): Promise<AscentOutputDto | Error>;
-  Get(userId: string, token: Payload): Promise<ListBoulderOutputDto | Error>;
-  Update(id: string, token: Payload): Promise<AscentOutputDto | Error>;
-  Delete(id: string, token: Payload): Promise<AscentOutputDto | Error>;
+  get(userId: string, token: Payload): Promise<ListBoulderOutputDto | Error>;
+  update(id: string, token: Payload): Promise<AscentOutputDto | Error>;
+  delete(id: string, token: Payload): Promise<AscentOutputDto | Error>;
 }

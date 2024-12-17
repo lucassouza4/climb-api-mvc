@@ -12,22 +12,22 @@ export type UserProps = {
 export abstract class User {
   protected constructor(readonly props: UserProps) {}
 
-  public get Id() {
+  public get id() {
     return this.props.id;
   }
-  public get Type() {
+  public get type() {
     return this.props.type;
   }
-  public get Name() {
+  public get name() {
     return this.props.name;
   }
-  public get Email() {
+  public get email() {
     return this.props.email;
   }
-  public get Password() {
+  public get password() {
     return this.props.password;
   }
-  // public get Foto() {
+  // public get foto() {
   //   return this.props.foto;
   // }
 

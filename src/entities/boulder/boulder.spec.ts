@@ -11,13 +11,13 @@ describe("Boulder entity test", () => {
       ascents: 0,
     };
 
-    const boulder = Boulder.With(
+    const boulder = Boulder.with(
       input.id,
       input.name,
       input.sector,
       input.city,
       input.difficulty,
-      input.ascents,
+      input.ascents
     );
 
     expect(boulder).toBeInstanceOf(Boulder);
@@ -33,13 +33,13 @@ describe("Boulder entity test", () => {
       ascents: 0,
     };
 
-    const boulder = Boulder.With(
+    const boulder = Boulder.with(
       input.id,
       input.name,
       input.sector,
       input.city,
       input.difficulty,
-      input.ascents,
+      input.ascents
     );
 
     expect(boulder).toBeInstanceOf(Error);
@@ -55,13 +55,13 @@ describe("Boulder entity test", () => {
       ascents: -10,
     };
 
-    const boulder = Boulder.With(
+    const boulder = Boulder.with(
       input.id,
       input.name,
       input.sector,
       input.city,
       input.difficulty,
-      input.ascents,
+      input.ascents
     );
 
     expect(boulder).toBeInstanceOf(Error);
@@ -75,11 +75,11 @@ describe("Boulder entity test", () => {
       difficulty: 0,
     };
 
-    const boulder = Boulder.Create(
+    const boulder = Boulder.build(
       input.name,
       input.sector,
       input.city,
-      input.difficulty,
+      input.difficulty
     );
 
     expect(boulder).toBeInstanceOf(Boulder);
@@ -93,11 +93,11 @@ describe("Boulder entity test", () => {
       difficulty: -10,
     };
 
-    const boulder = Boulder.Create(
+    const boulder = Boulder.build(
       input.name,
       input.sector,
       input.city,
-      input.difficulty,
+      input.difficulty
     );
 
     expect(boulder).toBeInstanceOf(Error);
@@ -111,14 +111,14 @@ describe("Boulder entity test", () => {
       difficulty: 0,
     };
 
-    const boulder = Boulder.Create(
+    const boulder = Boulder.build(
       input.name,
       input.sector,
       input.city,
-      input.difficulty,
+      input.difficulty
     ) as Boulder;
 
-    boulder.IncrementAscents();
-    expect(boulder.Ascents).toEqual(1);
+    boulder.incrementAscents();
+    expect(boulder.ascents).toEqual(1);
   });
 });

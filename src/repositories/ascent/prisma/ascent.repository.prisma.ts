@@ -5,20 +5,20 @@ import { AscentRepository } from "../ascent.repository";
 export class AscentRepositoryPrisma implements AscentRepository {
   private constructor(readonly prisma: PrismaClient) {}
 
-  public static Build(prisma: PrismaClient) {
+  public static build(prisma: PrismaClient) {
     return new AscentRepositoryPrisma(prisma);
   }
   async save(ascent: Ascent): Promise<Ascent | Error> {
     try {
       const newAscent = await this.prisma.ascent.create({
         data: {
-          id: ascent.Id,
-          userId: ascent.UserId,
-          boulderId: ascent.BoulderId,
+          id: ascent.id,
+          userId: ascent.userId,
+          boulderId: ascent.boulderId,
         },
       });
 
-      return Ascent.With(newAscent.id, newAscent.userId, newAscent.boulderId);
+      return Ascent.with(newAscent.id, newAscent.userId, newAscent.boulderId);
     } catch (error: any) {
       return new Error(error.message);
     }
@@ -34,7 +34,7 @@ export class AscentRepositoryPrisma implements AscentRepository {
           boulderId,
         },
       });
-      return Ascent.With(ascent.id, ascent.userId, ascent.boulderId);
+      return Ascent.with(ascent.id, ascent.userId, ascent.boulderId);
     } catch (error: any) {
       return new Error(error.message);
     }
@@ -48,7 +48,7 @@ export class AscentRepositoryPrisma implements AscentRepository {
       });
 
       return ascents.map((ascent: any) => {
-        return Ascent.With(ascent.id, ascent.userId, ascent.boulderId);
+        return Ascent.with(ascent.id, ascent.userId, ascent.boulderId);
       });
     } catch (error: any) {
       return new Error(error.message);

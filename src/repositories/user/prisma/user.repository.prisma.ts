@@ -16,15 +16,15 @@ export class UserRepositoryPrisma implements UserRepository {
     try {
       const newUser = await this.prisma.user.create({
         data: {
-          id: user.Id,
-          type: Type[user.Type],
-          name: user.Name,
-          email: user.Email,
-          password: user.Password,
+          id: user.id,
+          type: Type[user.type],
+          name: user.name,
+          email: user.email,
+          password: user.password,
         },
       });
 
-      if (user.Type == Type.BASIC) {
+      if (user.type == Type.BASIC) {
         return BasicUser.with(newUser.id, newUser.name, newUser.email);
       }
       return MasterUser.with(newUser.id, newUser.name, newUser.email);

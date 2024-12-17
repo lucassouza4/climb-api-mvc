@@ -47,7 +47,7 @@ export class UserUsecaseService implements UserService {
     }
     const token = jwt.sign(
       {
-        id: findedUser.Id,
+        id: findedUser.id,
         permissions: findedUser.getPermissions(),
       },
       jwtSecret
@@ -70,9 +70,9 @@ export class UserUsecaseService implements UserService {
 
   private presentOutput(user: User, token: string): UserOutputDto {
     const output: UserOutputDto = {
-      id: user.Id,
-      name: user.Name,
-      email: user.Email,
+      id: user.id,
+      name: user.name,
+      email: user.email,
       token: token,
     };
     return output;

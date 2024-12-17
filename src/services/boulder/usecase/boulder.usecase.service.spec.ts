@@ -2,13 +2,12 @@ import { BoulderUsecaseService } from "./boulder.usecase.service";
 import { boulderRepositoryMock } from "../../../util/mocks/prismaClient";
 import { Boulder } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
-import { secureHeapUsed } from "crypto";
 
 let service: BoulderUsecaseService;
 
 beforeEach(() => {
   service = BoulderUsecaseService.build(
-    boulderRepositoryMock as BoulderRepository,
+    boulderRepositoryMock as BoulderRepository
   );
   jest.clearAllMocks();
 });
@@ -21,19 +20,19 @@ describe("Create - Boulder usecase service", () => {
       city: "teste",
       difficulty: 0,
     };
-    const { Name, Sector, City, Difficulty } = Boulder.Create(
+    const { name, sector, city, difficulty } = Boulder.build(
       input.name,
       input.sector,
       input.city,
-      input.difficulty,
+      input.difficulty
     ) as Boulder;
     const savedBoulder = {
-      Name,
-      Sector,
-      City,
-      Difficulty,
-      Id: "123",
-      Ascents: 0,
+      name,
+      sector,
+      city,
+      difficulty,
+      id: "123",
+      ascents: 0,
     } as Boulder;
 
     const output = {
@@ -48,11 +47,11 @@ describe("Create - Boulder usecase service", () => {
     boulderRepositoryMock.get.mockResolvedValue([]);
     boulderRepositoryMock.save.mockResolvedValue(savedBoulder);
 
-    const result = await service.Create(
+    const result = await service.create(
       input.name,
       input.difficulty,
       input.sector,
-      input.city,
+      input.city
     );
 
     expect(result).toEqual(output);
@@ -66,20 +65,20 @@ describe("Create - Boulder usecase service", () => {
       city: "teste",
       difficulty: 0,
     };
-    const savedBoulder = Boulder.Create(
+    const savedBoulder = Boulder.build(
       input.name,
       input.sector,
       input.city,
-      input.difficulty,
+      input.difficulty
     );
 
     boulderRepositoryMock.get.mockResolvedValue(savedBoulder);
 
-    const result = await service.Create(
+    const result = await service.create(
       input.name,
       input.difficulty,
       input.sector,
-      input.city,
+      input.city
     );
 
     expect(result).toBeInstanceOf(Error);
@@ -96,11 +95,11 @@ describe("Create - Boulder usecase service", () => {
 
     boulderRepositoryMock.get.mockResolvedValue([]);
 
-    const result = await service.Create(
+    const result = await service.create(
       input.name,
       input.difficulty,
       input.sector,
-      input.city,
+      input.city
     );
 
     expect(result).toBeInstanceOf(Error);
@@ -118,11 +117,11 @@ describe("Create - Boulder usecase service", () => {
 
     boulderRepositoryMock.save.mockResolvedValue(savedBoulder);
 
-    const result = await service.Create(
+    const result = await service.create(
       input.name,
       input.difficulty,
       input.sector,
-      input.city,
+      input.city
     );
 
     expect(result).toBeInstanceOf(Error);
@@ -133,31 +132,31 @@ describe("Create - Boulder usecase service", () => {
 describe("List - Boulder usecase service", () => {
   it("should list boulders", async () => {
     const boulders = [
-      Boulder.Create("Boulder 1", "Sector 1", "City 1", 5) as Boulder,
-      Boulder.Create("Boulder 2", "Sector 2", "City 2", 6) as Boulder,
+      Boulder.build("Boulder 1", "Sector 1", "City 1", 5) as Boulder,
+      Boulder.build("Boulder 2", "Sector 2", "City 2", 6) as Boulder,
     ];
 
     boulderRepositoryMock.getAll.mockResolvedValue(boulders);
 
-    const result = await service.List();
+    const result = await service.list();
 
     expect(result).toEqual({
       boulders: [
         {
-          id: boulders[0].Id,
-          name: boulders[0].Name,
-          difficulty: boulders[0].Difficulty,
-          sector: boulders[0].Sector,
-          city: boulders[0].City,
-          ascents: boulders[0].Ascents,
+          id: boulders[0].id,
+          name: boulders[0].name,
+          difficulty: boulders[0].difficulty,
+          sector: boulders[0].sector,
+          city: boulders[0].city,
+          ascents: boulders[0].ascents,
         },
         {
-          id: boulders[1].Id,
-          name: boulders[1].Name,
-          difficulty: boulders[1].Difficulty,
-          sector: boulders[1].Sector,
-          city: boulders[1].City,
-          ascents: boulders[1].Ascents,
+          id: boulders[1].id,
+          name: boulders[1].name,
+          difficulty: boulders[1].difficulty,
+          sector: boulders[1].sector,
+          city: boulders[1].city,
+          ascents: boulders[1].ascents,
         },
       ],
     });
@@ -167,31 +166,31 @@ describe("List - Boulder usecase service", () => {
   it("should list boulders by params", async () => {
     const city = "test";
     const boulders = [
-      Boulder.Create("Boulder 1", "Sector 1", "City 1", 5) as Boulder,
-      Boulder.Create("Boulder 2", "Sector 2", "City 2", 6) as Boulder,
+      Boulder.build("Boulder 1", "Sector 1", "City 1", 5) as Boulder,
+      Boulder.build("Boulder 2", "Sector 2", "City 2", 6) as Boulder,
     ];
 
     boulderRepositoryMock.get.mockResolvedValue(boulders);
 
-    const result = await service.List(undefined, undefined, undefined, city);
+    const result = await service.list(undefined, undefined, undefined, city);
 
     expect(result).toEqual({
       boulders: [
         {
-          id: boulders[0].Id,
-          name: boulders[0].Name,
-          difficulty: boulders[0].Difficulty,
-          sector: boulders[0].Sector,
-          city: boulders[0].City,
-          ascents: boulders[0].Ascents,
+          id: boulders[0].id,
+          name: boulders[0].name,
+          difficulty: boulders[0].difficulty,
+          sector: boulders[0].sector,
+          city: boulders[0].city,
+          ascents: boulders[0].ascents,
         },
         {
-          id: boulders[1].Id,
-          name: boulders[1].Name,
-          difficulty: boulders[1].Difficulty,
-          sector: boulders[1].Sector,
-          city: boulders[1].City,
-          ascents: boulders[1].Ascents,
+          id: boulders[1].id,
+          name: boulders[1].name,
+          difficulty: boulders[1].difficulty,
+          sector: boulders[1].sector,
+          city: boulders[1].city,
+          ascents: boulders[1].ascents,
         },
       ],
     });
@@ -206,7 +205,7 @@ describe("List - Boulder usecase service", () => {
   it("should not list boulders", async () => {
     boulderRepositoryMock.getAll.mockResolvedValue(new Error());
 
-    const result = await service.List();
+    const result = await service.list();
 
     expect(result).toBeInstanceOf(Error);
     expect(boulderRepositoryMock.getAll).toHaveBeenCalled();
@@ -217,33 +216,33 @@ describe("Get - Boulder usecase service", () => {
   it("should get a boulder", async () => {
     const id = "123";
 
-    const { Name, Sector, City, Difficulty } = Boulder.Create(
+    const { name, sector, city, difficulty } = Boulder.build(
       "test",
       "test",
       "test",
-      0,
+      0
     ) as Boulder;
 
     const boulder = {
-      Name,
-      Sector,
-      City,
-      Difficulty,
-      Id: "123",
-      Ascents: 0,
+      name,
+      sector,
+      city,
+      difficulty,
+      id: "123",
+      ascents: 0,
     } as Boulder;
 
     boulderRepositoryMock.getByID.mockResolvedValue(boulder);
 
-    const result = await service.Get(id);
+    const result = await service.get(id);
 
     expect(result).toEqual({
-      id: boulder.Id,
-      name: boulder.Name,
-      city: boulder.City,
-      sector: boulder.Sector,
-      difficulty: boulder.Difficulty,
-      ascents: boulder.Ascents,
+      id: boulder.id,
+      name: boulder.name,
+      city: boulder.city,
+      sector: boulder.sector,
+      difficulty: boulder.difficulty,
+      ascents: boulder.ascents,
     });
     expect(boulderRepositoryMock.getByID).toHaveBeenCalledWith(id);
   });
@@ -253,7 +252,7 @@ describe("Get - Boulder usecase service", () => {
 
     boulderRepositoryMock.getByID.mockResolvedValue(new Error());
 
-    const result = await service.Get(id);
+    const result = await service.get(id);
 
     expect(result).toBeInstanceOf(Error);
     expect(boulderRepositoryMock.getByID).toHaveBeenCalledWith(id);
@@ -263,20 +262,20 @@ describe("Get - Boulder usecase service", () => {
 describe("IncreaseAscents - Boulder usecase service", () => {
   it("Should increase ascents of a boulder", async () => {
     const id = "123";
-    const boulder = Boulder.Create("test", "test", "test", 0) as Boulder;
+    const boulder = Boulder.build("test", "test", "test", 0) as Boulder;
 
     boulderRepositoryMock.getByID.mockResolvedValue(boulder);
     boulderRepositoryMock.update.mockResolvedValue(boulder);
 
-    const result = await service.IncreaseAscents(id);
+    const result = await service.increaseAscents(id);
 
     expect(result).toEqual({
-      id: boulder.Id,
-      name: boulder.Name,
-      city: boulder.City,
-      sector: boulder.Sector,
-      difficulty: boulder.Difficulty,
-      ascents: boulder.Ascents,
+      id: boulder.id,
+      name: boulder.name,
+      city: boulder.city,
+      sector: boulder.sector,
+      difficulty: boulder.difficulty,
+      ascents: boulder.ascents,
     });
     expect(boulderRepositoryMock.getByID).toHaveBeenCalledWith(id);
     expect(boulderRepositoryMock.update).toHaveBeenCalledWith(boulder);
@@ -284,11 +283,10 @@ describe("IncreaseAscents - Boulder usecase service", () => {
 
   it("Should not get boulder", async () => {
     const id = "123";
-    const boulder = Boulder.Create("test", "test", "test", 0) as Boulder;
 
     boulderRepositoryMock.getByID.mockResolvedValue(new Error());
 
-    const result = await service.IncreaseAscents(id);
+    const result = await service.increaseAscents(id);
 
     expect(result).toBeInstanceOf(Error);
     expect(boulderRepositoryMock.getByID).toHaveBeenCalledWith(id);
@@ -296,12 +294,12 @@ describe("IncreaseAscents - Boulder usecase service", () => {
 
   it("Should not increase ascents of a boulder", async () => {
     const id = "123";
-    const boulder = Boulder.Create("test", "test", "test", 0) as Boulder;
+    const boulder = Boulder.build("test", "test", "test", 0) as Boulder;
 
     boulderRepositoryMock.getByID.mockResolvedValue(boulder);
     boulderRepositoryMock.update.mockResolvedValue(new Error());
 
-    const result = await service.IncreaseAscents(id);
+    const result = await service.increaseAscents(id);
 
     expect(result).toBeInstanceOf(Error);
     expect(boulderRepositoryMock.getByID).toHaveBeenCalledWith(id);
