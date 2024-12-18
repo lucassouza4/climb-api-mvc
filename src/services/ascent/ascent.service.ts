@@ -24,6 +24,9 @@ export interface AscentService {
     token: Payload
   ): Promise<AscentOutputDto | Error>;
   get(userId: string, token: Payload): Promise<ListAscentOutputDto | Error>;
-  update(id: string, token: Payload): Promise<AscentOutputDto | Error>;
-  delete(id: string, token: Payload): Promise<AscentOutputDto | Error>;
+  delete(
+    userId: string,
+    boulderId: string,
+    token: Payload
+  ): Promise<void | Error>;
 }

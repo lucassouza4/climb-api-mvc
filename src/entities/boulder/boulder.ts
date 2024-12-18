@@ -78,8 +78,12 @@ export class Boulder {
     return this.props.ascents;
   }
 
-  public incrementAscents() {
+  public encreaseAscents() {
     this.props.ascents += 1;
+  }
+
+  public decreaseAscents() {
+    this.props.ascents -= 1;
   }
 
   public static validate(difficulty: number, ascents?: number) {

@@ -28,10 +28,6 @@ export class AscentRepositoryPrisma implements AscentRepository {
     }
   }
 
-  getById(id: string): Promise<Ascent | Error> {
-    throw new Error("Method not implemented.");
-  }
-
   async get(userId: string, boulderId: string): Promise<Ascent | Error> {
     try {
       const ascent = await this.prisma.ascent.findFirstOrThrow({
@@ -68,11 +64,34 @@ export class AscentRepositoryPrisma implements AscentRepository {
     }
   }
 
-  update(ascent: Ascent): Promise<Ascent | Error> {
-    throw new Error("Method not implemented.");
-  }
+  async delete(userId: string, boulderId: string): Promise<void | Error> {
+    try {
+      const ascent = await this.prisma.ascent.findUnique({
+        where: {
+          userId_boulderId: {
+            userId,
+            boulderId,
+          },
+        },
+      });
 
-  delete(id: string): Promise<void | Error> {
-    throw new Error("Method not implemented.");
+      if (!ascent) {
+        return new Error("Registro não encontrado.");
+      }
+
+      await this.prisma.ascent.delete({
+        where: {
+          userId_boulderId: {
+            userId,
+            boulderId,
+          },
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
+    }
   }
 }

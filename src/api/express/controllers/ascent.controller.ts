@@ -35,4 +35,21 @@ export class AscentController {
       else res.status(200).json(result);
     }
   }
+
+  public async delete(req: Request, res: Response) {
+    const { userId, boulderId } = req.query;
+    const decodedToken = verifyToken(req);
+
+    if (decodedToken instanceof Error) {
+      res.status(401).json(decodedToken.message);
+    } else {
+      const result = await this.service.delete(
+        userId as string,
+        boulderId as string,
+        decodedToken
+      );
+      if (result instanceof Error) res.status(400).json(result.message);
+      else res.status(200).json(result);
+    }
+  }
 }

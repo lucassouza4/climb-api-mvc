@@ -53,20 +53,20 @@ export class AscentUsecaseService implements AscentService {
       return new Error("Ascensão já existente");
     }
 
-    boulder.incrementAscents();
-    const incrementedBoulder = await this.boulderRepository.update(boulder);
-    if (incrementedBoulder instanceof Error) {
-      return new Error(incrementedBoulder.message);
+    boulder.encreaseAscents();
+    const encreaseedBoulder = await this.boulderRepository.update(boulder);
+    if (encreaseedBoulder instanceof Error) {
+      return new Error(encreaseedBoulder.message);
     }
 
-    user.incrementScore(incrementedBoulder.difficulty);
-    const incrementedUser = await this.userRepository.update(user);
-    if (incrementedUser instanceof Error) {
+    user.encreaseScore(encreaseedBoulder.difficulty);
+    const encreaseedUser = await this.userRepository.update(user);
+    if (encreaseedUser instanceof Error) {
       // É PRECISO VOLTAR O INCREMENT DE BOULDER
-      return new Error(incrementedUser.message);
+      return new Error(encreaseedUser.message);
     }
 
-    const ascent = Ascent.build(incrementedUser.id, incrementedBoulder.id);
+    const ascent = Ascent.build(encreaseedUser.id, encreaseedBoulder.id);
     if (ascent instanceof Error) {
       return new Error(ascent.message);
     }
@@ -76,7 +76,7 @@ export class AscentUsecaseService implements AscentService {
       return new Error(savedAscent.message);
     }
 
-    return this.presentOutput(incrementedUser);
+    return this.presentOutput(encreaseedUser);
   }
   async get(
     userId: string,
@@ -106,11 +106,45 @@ export class AscentUsecaseService implements AscentService {
 
     return this.listPresentOutput(ascentsBoulders);
   }
-  update(id: string, token: Payload): Promise<AscentOutputDto | Error> {
-    throw new Error("Method not implemented.");
-  }
-  delete(id: string, token: Payload): Promise<AscentOutputDto | Error> {
-    throw new Error("Method not implemented.");
+
+  async delete(
+    userId: string,
+    boulderId: string,
+    token: Payload
+  ): Promise<void | Error> {
+    const user = await this.userRepository.getByID(userId);
+    if (user instanceof Error) {
+      return new Error(user.message);
+    }
+
+    if (user.id != token.id) {
+      return new Error("Usuário não correspondente");
+    }
+
+    const boulder = await this.boulderRepository.getByID(boulderId);
+    if (boulder instanceof Error) {
+      return new Error(boulder.message);
+    }
+
+    const deletedAscent = await this.ascentRepository.delete(
+      user.id,
+      boulderId
+    );
+    if (deletedAscent instanceof Error) {
+      return new Error(deletedAscent.message);
+    }
+
+    boulder.decreaseAscents();
+    const decresedBoulder = await this.boulderRepository.update(boulder);
+    if (decresedBoulder instanceof Error) {
+      return new Error(decresedBoulder.message);
+    }
+
+    user.decreaseScore(decresedBoulder.difficulty);
+    const decreasedUser = await this.userRepository.update(user);
+    if (decreasedUser instanceof Error) {
+      return new Error(decreasedUser.message);
+    }
   }
 
   private presentOutput(user: User): AscentOutputDto {

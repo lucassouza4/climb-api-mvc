@@ -50,6 +50,7 @@ model Ascent {
   boulder   Boulder  @relation(fields: [boulderId], references: [id])
   User      User     @relation(fields: [userId], references: [id])
 
+  @@unique([userId, boulderId])
   @@map("Ascents")
 }
 

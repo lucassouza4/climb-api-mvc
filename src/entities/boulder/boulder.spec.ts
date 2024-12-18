@@ -118,7 +118,7 @@ describe("Boulder entity test", () => {
       input.difficulty
     ) as Boulder;
 
-    boulder.incrementAscents();
+    boulder.encreaseAscents();
     expect(boulder.ascents).toEqual(1);
   });
 });

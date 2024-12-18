@@ -43,13 +43,17 @@ function main() {
     userController.create.bind(userController)
   );
   apiExpress.addGetRoute(
-    "/boulders/",
+    "/boulders",
     boulderController.get.bind(boulderController)
   );
   apiExpress.addGetRoute("/user", userController.get.bind(userController));
   apiExpress.addGetRoute(
-    "/user/ascents",
+    "/ascents",
     ascentController.get.bind(ascentController)
+  );
+  apiExpress.addDeleteRoute(
+    "/ascents",
+    ascentController.delete.bind(ascentController)
   );
 
   apiExpress.start(8000);
