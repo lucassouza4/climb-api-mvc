@@ -121,4 +121,23 @@ describe("Boulder entity test", () => {
     boulder.encreaseAscents();
     expect(boulder.ascents).toEqual(1);
   });
+  it("Should decrease ascents", () => {
+    const input = {
+      name: "test",
+      sector: "test",
+      city: "test",
+      difficulty: 0,
+    };
+
+    const boulder = Boulder.build(
+      input.name,
+      input.sector,
+      input.city,
+      input.difficulty
+    ) as Boulder;
+
+    boulder.encreaseAscents();
+    boulder.decreaseAscents();
+    expect(boulder.ascents).toEqual(0);
+  });
 });
