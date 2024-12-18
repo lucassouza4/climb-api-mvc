@@ -3,6 +3,7 @@ import { UserRepository } from "../../../repositories/user/user.repository";
 import { UserOutputDto, UserService } from "../user.service";
 import { User } from "../../../entities/user/user";
 import jwt from "jsonwebtoken";
+import { Payload } from "../../../util/jwt.util";
 
 export class UserUsecaseService implements UserService {
   private constructor(readonly repository: UserRepository) {}
@@ -56,6 +57,19 @@ export class UserUsecaseService implements UserService {
     return this.presentOutput(findedUser, token);
   }
 
+  async get(id: string, token: Payload): Promise<UserOutputDto | Error> {
+    const user = await this.repository.getByID(id);
+    if (user instanceof Error) {
+      return new Error(user.message);
+    }
+
+    if (user.id != token.id) {
+      return new Error("Usuário não correspondente");
+    }
+
+    return this.presentOutput(user);
+  }
+
   update(
     name?: string,
     email?: string,
@@ -68,14 +82,24 @@ export class UserUsecaseService implements UserService {
     throw new Error("Method not implemented.");
   }
 
-  private presentOutput(user: User, token: string): UserOutputDto {
-    const output: UserOutputDto = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      score: user.score,
-      token: token,
-    };
+  private presentOutput(user: User, token?: string): UserOutputDto {
+    let output: UserOutputDto;
+    if (token) {
+      output = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        score: user.score,
+        token: token,
+      };
+    } else {
+      output = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        score: user.score,
+      };
+    }
     return output;
   }
 }

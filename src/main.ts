@@ -46,6 +46,7 @@ function main() {
     "/boulders/",
     boulderController.get.bind(boulderController)
   );
+  apiExpress.addGetRoute("/user", userController.get.bind(userController));
   apiExpress.addGetRoute(
     "/user/ascents",
     ascentController.get.bind(ascentController)
