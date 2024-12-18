@@ -29,15 +29,15 @@ function main() {
   );
   const ascentController = AscentController.build(ascentService);
 
+  apiExpress.addPostRoute("/login", userController.login.bind(userController));
   apiExpress.addPostRoute(
     "/boulders/create",
     boulderController.create.bind(boulderController)
   );
   apiExpress.addPostRoute(
-    "/user/ascents/create",
+    "/ascents/create",
     ascentController.create.bind(ascentController)
   );
-  apiExpress.addPostRoute("/login", userController.login.bind(userController));
   apiExpress.addPostRoute(
     "/users/create",
     userController.create.bind(userController)

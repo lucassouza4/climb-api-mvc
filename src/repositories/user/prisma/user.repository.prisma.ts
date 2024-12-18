@@ -104,12 +104,39 @@ export class UserRepositoryPrisma implements UserRepository {
       return new Error("Unknown error occurred.");
     }
   }
-  update(
-    name?: string,
-    email?: string,
-    password?: string
-  ): Promise<User | Error> {
-    throw new Error("Method not implemented.");
+  async update(user: User): Promise<User | Error> {
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          type: Type[user.type],
+          name: user.name,
+          email: user.email,
+          score: user.score,
+        },
+      });
+      if (updatedUser.type == Type[Type.BASIC]) {
+        return BasicUser.with(
+          updatedUser.id,
+          updatedUser.name,
+          updatedUser.email,
+          updatedUser.score
+        );
+      }
+      return MasterUser.with(
+        updatedUser.id,
+        updatedUser.name,
+        updatedUser.email,
+        updatedUser.score
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
+    }
   }
   delete(): Promise<void | Error> {
     throw new Error("Method not implemented.");

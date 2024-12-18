@@ -13,6 +13,10 @@ export type UserProps = {
 export abstract class User {
   protected constructor(readonly props: UserProps) {}
 
+  public incrementScore(value: number) {
+    this.props.score += value * 10;
+  }
+
   public get id() {
     return this.props.id;
   }
