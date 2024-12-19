@@ -1,3 +1,4 @@
+import { Type } from "../../util/enums/user";
 import { Payload } from "../../util/jwt.util";
 
 export type UserOutputDto = {
@@ -5,6 +6,7 @@ export type UserOutputDto = {
   name: string;
   email: string;
   score: number;
+  type: Type;
   token?: string;
 };
 

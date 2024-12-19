@@ -90,6 +90,7 @@ export class UserUsecaseService implements UserService {
         name: user.name,
         email: user.email,
         score: user.score,
+        type: user.type,
         token: token,
       };
     } else {
@@ -98,6 +99,7 @@ export class UserUsecaseService implements UserService {
         name: user.name,
         email: user.email,
         score: user.score,
+        type: user.type,
       };
     }
     return output;
