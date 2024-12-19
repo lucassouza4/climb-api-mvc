@@ -15,7 +15,7 @@ export function verifyToken(req: Request): Payload | Error {
     try {
       const decodedToken = jwt.verify(tokenValue, jwtSecret) as Payload;
       return { id: decodedToken.id, permissions: decodedToken.permissions };
-    } catch (error: any) {
+    } catch {
       return new Error("Token invalido !");
     }
   }

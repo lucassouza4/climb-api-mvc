@@ -28,6 +28,6 @@ export class BasicUser extends User {
   }
 
   public getPermissions(): Permissions[] {
-    return [Permissions.READ_BOULDER, Permissions.UPDATE_BOULDER];
+    return [Permissions.READ_BOULDER];
   }
 }
