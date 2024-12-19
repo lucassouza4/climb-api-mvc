@@ -3,13 +3,7 @@ import { AscentRepository } from "../../../repositories/ascent/ascent.repository
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { Payload } from "../../../util/jwt.util";
-import {
-  AscentOutputDto,
-  AscentService,
-  ListAscentOutputDto,
-} from "../ascent.service";
-import { Boulder } from "../../../entities/boulder/boulder";
-import { User } from "../../../entities/user/user";
+import { AscentService } from "../ascent.service";
 
 export class AscentUsecaseService implements AscentService {
   private constructor(
@@ -34,7 +28,7 @@ export class AscentUsecaseService implements AscentService {
     userId: string, // NÃO É NECESSÁRIO
     boulderId: string,
     token: Payload
-  ): Promise<AscentOutputDto | Error> {
+  ): Promise<void | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
       return new Error("Usuário não encontrado");
@@ -54,19 +48,19 @@ export class AscentUsecaseService implements AscentService {
     }
 
     boulder.encreaseAscents();
-    const encreaseedBoulder = await this.boulderRepository.update(boulder);
-    if (encreaseedBoulder instanceof Error) {
-      return new Error(encreaseedBoulder.message);
+    const encreasedBoulder = await this.boulderRepository.update(boulder);
+    if (encreasedBoulder instanceof Error) {
+      return new Error(encreasedBoulder.message);
     }
 
-    user.encreaseScore(encreaseedBoulder.difficulty);
-    const encreaseedUser = await this.userRepository.update(user);
-    if (encreaseedUser instanceof Error) {
+    user.encreaseScore(encreasedBoulder.difficulty);
+    const encreasedUser = await this.userRepository.update(user);
+    if (encreasedUser instanceof Error) {
       // É PRECISO VOLTAR O INCREMENT DE BOULDER
-      return new Error(encreaseedUser.message);
+      return new Error(encreasedUser.message);
     }
 
-    const ascent = Ascent.build(encreaseedUser.id, encreaseedBoulder.id);
+    const ascent = Ascent.build(encreasedUser.id, encreasedBoulder.id);
     if (ascent instanceof Error) {
       return new Error(ascent.message);
     }
@@ -76,12 +70,9 @@ export class AscentUsecaseService implements AscentService {
       return new Error(savedAscent.message);
     }
 
-    return this.presentOutput(encreaseedUser);
+    return;
   }
-  async get(
-    userId: string,
-    token: Payload
-  ): Promise<ListAscentOutputDto | Error> {
+  async get(userId: string, token: Payload): Promise<void | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
       return new Error("Usuário não encontrado");
@@ -104,7 +95,7 @@ export class AscentUsecaseService implements AscentService {
       return new Error(ascentsBoulders.message);
     }
 
-    return this.listPresentOutput(ascentsBoulders);
+    return;
   }
 
   async delete(
@@ -145,31 +136,5 @@ export class AscentUsecaseService implements AscentService {
     if (decreasedUser instanceof Error) {
       return new Error(decreasedUser.message);
     }
-  }
-
-  private presentOutput(user: User): AscentOutputDto {
-    const ascentOutput: AscentOutputDto = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      score: user.score,
-    };
-    return ascentOutput;
-  }
-
-  private listPresentOutput(boulderList: Boulder[]): ListAscentOutputDto {
-    const ascentsOutput: ListAscentOutputDto = {
-      boulders: boulderList.map((boulder) => {
-        return {
-          id: boulder.id,
-          name: boulder.name,
-          city: boulder.city,
-          sector: boulder.sector,
-          difficulty: boulder.difficulty,
-          ascents: boulder.ascents,
-        };
-      }),
-    };
-    return ascentsOutput;
   }
 }
