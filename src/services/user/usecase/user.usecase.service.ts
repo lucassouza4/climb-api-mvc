@@ -30,8 +30,7 @@ export class UserUsecaseService implements UserService {
     if (savedUser instanceof Error) {
       return new Error("Não foi possível salvar o usuário");
     }
-    const token = "teste";
-    return this.presentOutput(savedUser, token);
+    return this.presentOutput(savedUser);
   }
 
   public async login(
