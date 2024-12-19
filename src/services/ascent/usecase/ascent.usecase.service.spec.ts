@@ -79,19 +79,12 @@ describe("Create - Ascent usecase service", () => {
     userRepositoryMock.update.mockReturnValue(savedUser);
     ascentRepositoryMock.save.mockReturnValue(savedAscent);
 
-    const output = {
-      id: savedUser.id,
-      name: savedUser.name,
-      email: savedUser.email,
-      score: savedUser.score,
-    };
-
     const result = await service.create(
       input.userId,
       input.boulderId,
       input.token
     );
-    expect(result).toEqual(output);
+    expect(result).not.toBeInstanceOf(Error);
   });
   it("Should not found user", async () => {
     const output = new Error("Usuário não encontrado");

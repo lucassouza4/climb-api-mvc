@@ -41,6 +41,7 @@ describe("Create - User usecase service", () => {
       name: "teste",
       email: "teste",
       score: 0,
+      type: 0,
     };
 
     userRepositoryMock.get.mockResolvedValue(new Error());
@@ -104,6 +105,7 @@ describe("Login - User usecase service", () => {
       name: savedUser.name,
       email: savedUser.email,
       score: savedUser.score,
+      type: savedUser.type,
       token,
     };
     userRepositoryMock.get.mockResolvedValue(savedUser);
@@ -143,6 +145,7 @@ describe("Get - User usecase service", () => {
       name: savedUser.name,
       email: savedUser.email,
       score: savedUser.score,
+      type: savedUser.type,
     };
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
