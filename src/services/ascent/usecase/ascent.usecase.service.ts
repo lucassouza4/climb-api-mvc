@@ -1,9 +1,10 @@
 import { Ascent } from "../../../entities/ascent/ascent";
+import { Boulder } from "../../../entities/boulder/boulder";
 import { AscentRepository } from "../../../repositories/ascent/ascent.repository";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { Payload } from "../../../util/jwt.util";
-import { AscentService } from "../ascent.service";
+import { AscentService, ListAscentOutputDto } from "../ascent.service";
 
 export class AscentUsecaseService implements AscentService {
   private constructor(
@@ -72,7 +73,10 @@ export class AscentUsecaseService implements AscentService {
 
     return;
   }
-  async get(userId: string, token: Payload): Promise<void | Error> {
+  async get(
+    userId: string,
+    token: Payload
+  ): Promise<ListAscentOutputDto | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
       return new Error("Usuário não encontrado");
@@ -95,7 +99,7 @@ export class AscentUsecaseService implements AscentService {
       return new Error(ascentsBoulders.message);
     }
 
-    return;
+    return this.listPresentOutput(ascentsBoulders);
   }
 
   async delete(
@@ -136,5 +140,20 @@ export class AscentUsecaseService implements AscentService {
     if (decreasedUser instanceof Error) {
       return new Error(decreasedUser.message);
     }
+  }
+  private listPresentOutput(boulderList: Boulder[]): ListAscentOutputDto {
+    const ascentsOutput: ListAscentOutputDto = {
+      boulders: boulderList.map((boulder) => {
+        return {
+          id: boulder.id,
+          name: boulder.name,
+          city: boulder.city,
+          sector: boulder.sector,
+          difficulty: boulder.difficulty,
+          ascents: boulder.ascents,
+        };
+      }),
+    };
+    return ascentsOutput;
   }
 }
