@@ -3,7 +3,11 @@ import { UserRepository } from "../../../repositories/user/user.repository";
 import { Permissions } from "../../../util/enums/user";
 import { Payload } from "../../../util/jwt.util";
 import { jwtMock } from "../../../util/mocks/jwt";
-import { userRepositoryMock } from "../../../util/mocks/prismaClient";
+import {
+  redisClientMock,
+  userRepositoryMock,
+} from "../../../util/mocks/prismaClient";
+import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { UserUsecaseService } from "./user.usecase.service";
 
 let service: UserUsecaseService;
@@ -28,7 +32,11 @@ const savedUser = {
 jest.mock("jsonwebtoken", () => jwtMock);
 
 beforeEach(() => {
-  service = UserUsecaseService.build(userRepositoryMock as UserRepository);
+  const redisServiceMock = new RedisService(redisClientMock);
+  service = UserUsecaseService.build(
+    userRepositoryMock as UserRepository,
+    redisServiceMock
+  );
   jest.clearAllMocks();
 
   process.env.JWT_TOKEN = "mockedSecret";

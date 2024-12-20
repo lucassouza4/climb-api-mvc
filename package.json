@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --collect-coverage",
-    "dev": "ts-node src/main.ts"
+    "dev": "ts-node src/main.ts",
+    "build": "tsc "
   },
   "prisma": {
     "schema": "./prisma/schema.prisma",

@@ -5,8 +5,10 @@ import { Permissions } from "../../../util/enums/user";
 import {
   ascentRepositoryMock,
   boulderRepositoryMock,
+  redisClientMock,
   userRepositoryMock,
 } from "../../../util/mocks/prismaClient";
+import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { AscentUsecaseService } from "./ascent.usecase.service";
 
 let service: AscentUsecaseService;
@@ -53,10 +55,12 @@ const savedAscent = {
 };
 
 beforeEach(() => {
+  const redisService = new RedisService(redisClientMock);
   service = AscentUsecaseService.build(
     ascentRepositoryMock as AscentRepository,
     userRepositoryMock as UserRepository,
-    boulderRepositoryMock as BoulderRepository
+    boulderRepositoryMock as BoulderRepository,
+    redisService
   );
   jest.clearAllMocks();
 });
