@@ -21,6 +21,7 @@ export class UserRepositoryPrisma implements UserRepository {
           name: user.name,
           email: user.email,
           password: user.password,
+          score: user.score,
         },
       });
 
@@ -140,5 +141,26 @@ export class UserRepositoryPrisma implements UserRepository {
   }
   delete(): Promise<void | Error> {
     throw new Error("Method not implemented.");
+  }
+
+  async getAll(ids?: string[]): Promise<User[] | Error> {
+    try {
+      const users = await this.prisma.user.findMany({
+        where: {
+          id: { in: ids },
+        },
+      });
+      return users.map((user: User) => {
+        if (user.type.toString() == Type[Type.BASIC]) {
+          return BasicUser.with(user.id, user.name, user.email, user.score);
+        }
+        return MasterUser.with(user.id, user.name, user.email, user.score);
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
+    }
   }
 }

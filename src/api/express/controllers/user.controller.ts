@@ -31,10 +31,16 @@ export class UserController {
     const userId = req.query.userId as string;
     const decodedToken = verifyToken(req);
 
+    let result;
+
     if (decodedToken instanceof Error) {
       res.status(401).json(decodedToken.message);
     } else {
-      const result = await this.service.get(userId, decodedToken);
+      if (userId === undefined) {
+        result = await this.service.list();
+      } else {
+        result = await this.service.get(userId, decodedToken);
+      }
       if (result instanceof Error) res.status(400).json(result.message);
       else res.status(200).json(result);
     }

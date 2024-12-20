@@ -1,6 +1,6 @@
 import { BasicUser } from "../../../entities/user/basicUser";
 import { UserRepository } from "../../../repositories/user/user.repository";
-import { UserOutputDto, UserService } from "../user.service";
+import { ListUserOutputDto, UserOutputDto, UserService } from "../user.service";
 import { User } from "../../../entities/user/user";
 import jwt from "jsonwebtoken";
 import { Payload } from "../../../util/jwt.util";
@@ -79,6 +79,29 @@ export class UserUsecaseService implements UserService {
 
   delete(email: string): Promise<void | Error> {
     throw new Error("Method not implemented.");
+  }
+
+  async list(ids?: string[]): Promise<ListUserOutputDto | Error> {
+    const users = await this.repository.getAll(ids);
+    if (users instanceof Error) {
+      return new Error("Nenhum usuário encontrado.");
+    }
+    return this.presentListOutput(users);
+  }
+
+  private presentListOutput(userList: User[]): ListUserOutputDto {
+    const output: ListUserOutputDto = {
+      users: userList.map((user) => {
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          score: user.score,
+        };
+      }),
+    };
+    return output;
   }
 
   private presentOutput(user: User, token?: string): UserOutputDto {

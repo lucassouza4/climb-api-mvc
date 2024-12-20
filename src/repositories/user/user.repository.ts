@@ -6,4 +6,5 @@ export interface UserRepository {
   getByID(id: string): Promise<User | Error>;
   update(user: User): Promise<User | Error>;
   delete(): Promise<void | Error>;
+  getAll(ids?: string[]): Promise<User[] | Error>;
 }

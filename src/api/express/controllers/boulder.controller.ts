@@ -19,19 +19,16 @@ export class BoulderController {
 
   public async get(req: Request, res: Response) {
     const id = req.query.id as string;
+    let result;
 
     if (id === undefined) {
       const { name, city, sector, difficulty } = req.body; // ERRADO
 
-      const result = await this.service.list(name, difficulty, sector, city);
-
-      if (result instanceof Error) res.status(400).json(result.message);
-      else res.status(200).json(result);
+      result = await this.service.list(name, difficulty, sector, city);
     } else {
-      const result = await this.service.get(id);
-
-      if (result instanceof Error) res.status(400).json(result.message);
-      else res.status(200).json(result);
+      result = await this.service.get(id);
     }
+    if (result instanceof Error) res.status(400).json(result.message);
+    else res.status(200).json(result);
   }
 }

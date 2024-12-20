@@ -10,6 +10,17 @@ export type UserOutputDto = {
   token?: string;
 };
 
+export type ListUserOutputDto = {
+  users: {
+    id: string;
+    name: string;
+    email: string;
+    score: number;
+    type: Type;
+    token?: string;
+  }[];
+};
+
 export interface UserService {
   create(
     name: string,
@@ -24,4 +35,5 @@ export interface UserService {
     password?: string
   ): Promise<UserOutputDto | Error>;
   delete(email: string): Promise<void | Error>;
+  list(ids?: string[]): Promise<ListUserOutputDto | Error>;
 }
