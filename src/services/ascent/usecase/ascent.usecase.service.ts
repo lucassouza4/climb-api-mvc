@@ -160,15 +160,6 @@ export class AscentUsecaseService implements AscentService {
 
       // Atualiza a posição do usuário no ranking (supondo que você está usando um sorted set)
       await this.redisService.zadd("ranking", score, userId);
-
-      // Opcional: Para garantir que o ranking é mantido com a pontuação correta, você pode adicionar o comando ZREVRANGE para verificar os top 10
-      const topRankings = await this.redisService.zrevrange(
-        "ranking",
-        0,
-        9,
-        "WITHSCORES"
-      );
-      console.log("Top 10 Rankings:", topRankings);
     } catch (error) {
       console.error(
         `Erro ao atualizar o ranking no Redis para user:${userId}`,

@@ -33,14 +33,6 @@ export class RedisService implements IRedisService {
     return result === 1;
   }
 
-  public async increment(key: string): Promise<number> {
-    return await this.client.incr(key);
-  }
-
-  public async decrement(key: string): Promise<number> {
-    return await this.client.decr(key);
-  }
-
   public async zadd(
     key: string,
     score: number,
