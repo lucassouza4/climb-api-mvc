@@ -7,6 +7,7 @@ export type UserProps = {
   email: string;
   score: number;
   password?: string;
+  rank?: number;
   // foto: string;
 };
 
@@ -38,6 +39,9 @@ export abstract class User {
   }
   public get password() {
     return this.props.password;
+  }
+  public get rank() {
+    return this.props.rank;
   }
   // public get foto() {
   //   return this.props.foto;

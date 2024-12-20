@@ -22,6 +22,7 @@ model Boulder {
   ascents    Int
   CreatedAt  DateTime @default(now())
   UpdatedAt  DateTime @updatedAt
+
   ascentions Ascent[]
 
   @@map("Boulders")
@@ -36,7 +37,10 @@ model User {
   score     Int
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
-  ascents   Ascent[]
+
+  ascents          Ascent[]
+  friendsRequested Friendship[] @relation("Requester")
+  friendsReceived  Friendship[] @relation("Addressee")
 
   @@map("Users")
 }
@@ -47,11 +51,33 @@ model Ascent {
   boulderId String
   CreatedAt DateTime @default(now())
   UpdatedAt DateTime @updatedAt
-  boulder   Boulder  @relation(fields: [boulderId], references: [id])
-  User      User     @relation(fields: [userId], references: [id])
+
+  boulder Boulder @relation(fields: [boulderId], references: [id])
+  User    User    @relation(fields: [userId], references: [id])
 
   @@unique([userId, boulderId])
   @@map("Ascents")
+}
+
+model Friendship {
+  id          String   @id @default(uuid())
+  requesterId String
+  addresseeId String
+  status      Status   @default(PENDING)
+  CreatedAt   DateTime @default(now())
+  UpdatedAt   DateTime @updatedAt
+
+  requester User @relation("Requester", fields: [requesterId], references: [id])
+  addressee User @relation("Addressee", fields: [addresseeId], references: [id])
+
+  @@unique([requesterId, addresseeId])
+  @@map("Friendships")
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 enum Type {

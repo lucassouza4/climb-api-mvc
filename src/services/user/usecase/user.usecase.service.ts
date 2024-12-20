@@ -4,12 +4,18 @@ import { ListUserOutputDto, UserOutputDto, UserService } from "../user.service";
 import { User } from "../../../entities/user/user";
 import jwt from "jsonwebtoken";
 import { Payload } from "../../../util/jwt.util";
+import { RedisService } from "../../redis/usecase/redis.usecase.service";
+import { Type } from "../../../util/enums/user";
+import { MasterUser } from "../../../entities/user/masterUser";
 
 export class UserUsecaseService implements UserService {
-  private constructor(readonly repository: UserRepository) {}
+  private constructor(
+    readonly repository: UserRepository,
+    private readonly redisService: RedisService
+  ) {}
 
-  public static build(repository: UserRepository) {
-    return new UserUsecaseService(repository);
+  public static build(repository: UserRepository, redisService: RedisService) {
+    return new UserUsecaseService(repository, redisService);
   }
 
   public async create(
@@ -66,6 +72,29 @@ export class UserUsecaseService implements UserService {
       return new Error("Usuário não correspondente");
     }
 
+    const rank = await this.redisService.getRank("ranking", user.id);
+    if (rank) {
+      let userRanked: User;
+      if (user.type === Type.BASIC) {
+        userRanked = BasicUser.with(
+          user.id,
+          user.name,
+          user.email,
+          user.score,
+          rank
+        );
+      } else {
+        userRanked = MasterUser.with(
+          user.id,
+          user.name,
+          user.email,
+          user.score,
+          rank
+        );
+      }
+      return this.presentOutput(userRanked);
+    }
+
     return this.presentOutput(user);
   }
 
@@ -86,6 +115,36 @@ export class UserUsecaseService implements UserService {
     if (users instanceof Error) {
       return new Error("Nenhum usuário encontrado.");
     }
+    const usersId = users.map((user) => user.id);
+    const rank = await this.redisService.getRanksForMembers("ranking", usersId);
+    if (rank) {
+      let usersRanked: User[] = [];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].type === Type.BASIC) {
+          usersRanked.push(
+            BasicUser.with(
+              users[i].id,
+              users[i].name,
+              users[i].email,
+              users[i].score,
+              rank.get(users[i].id)
+            )
+          );
+        } else {
+          usersRanked.push(
+            MasterUser.with(
+              users[i].id,
+              users[i].name,
+              users[i].email,
+              users[i].score,
+              rank.get(users[i].id)
+            )
+          );
+        }
+      }
+      return this.presentListOutput(usersRanked);
+    }
+
     return this.presentListOutput(users);
   }
 
@@ -98,6 +157,7 @@ export class UserUsecaseService implements UserService {
           email: user.email,
           type: user.type,
           score: user.score,
+          rank: user.rank,
         };
       }),
     };
@@ -113,6 +173,7 @@ export class UserUsecaseService implements UserService {
         email: user.email,
         score: user.score,
         type: user.type,
+        rank: user.rank,
         token: token,
       };
     } else {
@@ -122,6 +183,7 @@ export class UserUsecaseService implements UserService {
         email: user.email,
         score: user.score,
         type: user.type,
+        rank: user.rank,
       };
     }
     return output;

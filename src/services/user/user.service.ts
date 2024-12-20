@@ -7,6 +7,7 @@ export type UserOutputDto = {
   email: string;
   score: number;
   type: Type;
+  rank?: number;
   token?: string;
 };
 
@@ -17,6 +18,7 @@ export type ListUserOutputDto = {
     email: string;
     score: number;
     type: Type;
+    rank?: number;
     token?: string;
   }[];
 };
