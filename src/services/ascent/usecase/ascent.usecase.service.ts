@@ -4,24 +4,28 @@ import { AscentRepository } from "../../../repositories/ascent/ascent.repository
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { Payload } from "../../../util/jwt.util";
+import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { AscentService, ListAscentOutputDto } from "../ascent.service";
 
 export class AscentUsecaseService implements AscentService {
   private constructor(
     readonly ascentRepository: AscentRepository,
     readonly userRepository: UserRepository,
-    readonly boulderRepository: BoulderRepository
+    readonly boulderRepository: BoulderRepository,
+    private readonly redisService: RedisService
   ) {}
 
   public static build(
     ascentRepository: AscentRepository,
     userRepository: UserRepository,
-    boulderRepository: BoulderRepository
+    boulderRepository: BoulderRepository,
+    redisService: RedisService
   ) {
     return new AscentUsecaseService(
       ascentRepository,
       userRepository,
-      boulderRepository
+      boulderRepository,
+      redisService
     );
   }
 
@@ -65,6 +69,8 @@ export class AscentUsecaseService implements AscentService {
     if (ascent instanceof Error) {
       return new Error(ascent.message);
     }
+
+    this.updateRankingAsync(user.id, user.score);
 
     const savedAscent = await this.ascentRepository.save(ascent);
     if (savedAscent instanceof Error) {
@@ -140,7 +146,28 @@ export class AscentUsecaseService implements AscentService {
     if (decreasedUser instanceof Error) {
       return new Error(decreasedUser.message);
     }
+
+    this.updateRankingAsync(user.id, user.score);
   }
+
+  private async updateRankingAsync(userId: string, score: number) {
+    try {
+      // Atualiza o score no Redis para o usuário
+      await this.redisService.set(`user:${userId}:score`, String(score));
+
+      // Remover o usuário do ranking, se já estiver presente, para garantir que sua pontuação seja atualizada
+      await this.redisService.zrem("ranking", userId);
+
+      // Atualiza a posição do usuário no ranking (supondo que você está usando um sorted set)
+      await this.redisService.zadd("ranking", score, userId);
+    } catch (error) {
+      console.error(
+        `Erro ao atualizar o ranking no Redis para user:${userId}`,
+        error
+      );
+    }
+  }
+
   private listPresentOutput(boulderList: Boulder[]): ListAscentOutputDto {
     const ascentsOutput: ListAscentOutputDto = {
       boulders: boulderList.map((boulder) => {

@@ -6,7 +6,12 @@ export class MasterUser extends User {
     super(props);
   }
 
-  public static build(name: string, email: string, password?: string) {
+  public static build(
+    name: string,
+    email: string,
+    password?: string,
+    rank?: number
+  ) {
     return new MasterUser({
       id: crypto.randomUUID().toString(),
       type: Type.MASTER,
@@ -14,16 +19,24 @@ export class MasterUser extends User {
       email,
       password,
       score: 0,
+      rank,
     });
   }
 
-  public static with(id: string, name: string, email: string, score: number) {
+  public static with(
+    id: string,
+    name: string,
+    email: string,
+    score: number,
+    rank?: number
+  ) {
     return new MasterUser({
       id,
       type: Type.MASTER,
       name,
       email,
       score,
+      rank,
     });
   }
 

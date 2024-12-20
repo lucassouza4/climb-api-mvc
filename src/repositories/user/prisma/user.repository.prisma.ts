@@ -60,14 +60,16 @@ export class UserRepositoryPrisma implements UserRepository {
           findedUser.id,
           findedUser.name,
           findedUser.email,
-          findedUser.score
+          findedUser.score,
+          findedUser.rank
         );
       }
       return MasterUser.with(
         findedUser.id,
         findedUser.name,
         findedUser.email,
-        findedUser.score
+        findedUser.score,
+        findedUser.rank
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -89,14 +91,16 @@ export class UserRepositoryPrisma implements UserRepository {
           findedUser.id,
           findedUser.name,
           findedUser.email,
-          findedUser.score
+          findedUser.score,
+          findedUser.rank
         );
       }
       return MasterUser.with(
         findedUser.id,
         findedUser.name,
         findedUser.email,
-        findedUser.score
+        findedUser.score,
+        findedUser.rank
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -123,15 +127,34 @@ export class UserRepositoryPrisma implements UserRepository {
           updatedUser.id,
           updatedUser.name,
           updatedUser.email,
-          updatedUser.score
+          updatedUser.score,
+          updatedUser.rank
         );
       }
       return MasterUser.with(
         updatedUser.id,
         updatedUser.name,
         updatedUser.email,
-        updatedUser.score
+        updatedUser.score,
+        updatedUser.rank
       );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+      return new Error("Unknown error occurred.");
+    }
+  }
+  async updateRank(userId: string, rank: number): Promise<void | Error> {
+    try {
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          rank,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return new Error(error.message);
@@ -152,9 +175,21 @@ export class UserRepositoryPrisma implements UserRepository {
       });
       return users.map((user: User) => {
         if (user.type.toString() == Type[Type.BASIC]) {
-          return BasicUser.with(user.id, user.name, user.email, user.score);
+          return BasicUser.with(
+            user.id,
+            user.name,
+            user.email,
+            user.score,
+            user.rank
+          );
         }
-        return MasterUser.with(user.id, user.name, user.email, user.score);
+        return MasterUser.with(
+          user.id,
+          user.name,
+          user.email,
+          user.score,
+          user.rank
+        );
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
