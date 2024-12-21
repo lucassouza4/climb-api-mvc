@@ -10,8 +10,8 @@
     "vercel-build": "npx prisma migrate deploy && npx prisma db seed"
   },
   "prisma": {
-    "schema": "./prisma/schema.prisma",
-    "seed": "ts-node ./src/util/seed.ts"
+    "schema": "prisma/schema.prisma",
+    "seed": "ts-node src/util/seed.ts"
   },
   "author": "",
   "license": "ISC",
