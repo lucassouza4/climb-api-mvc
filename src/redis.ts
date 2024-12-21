@@ -1,9 +1,7 @@
 import Redis from "ioredis";
 
-const createRedisClient = async (): Promise<Redis> => {
-  const client = new Redis(process.env.REDIS_URL + "?family=0");
-
-  await client.ping();
+const createRedisClient = (): Redis => {
+  const client = new Redis(process.env.REDIS_URL || "127.0.0.1");
 
   client.on("connect", () => {
     console.log("Redis connected");
