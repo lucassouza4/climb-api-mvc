@@ -741,8 +741,10 @@ async function main() {
   // Inserindo os dados
   for (const boulder of boulders) {
     try {
-      await prisma.boulder.create({
-        data: boulder,
+      await prisma.boulder.upsert({
+        where: { id: boulder.id }, // Verifica se o registro já existe pelo ID
+        update: {}, // Caso exista, não altera nada
+        create: boulder, // Caso não exista, cria o registro
       });
     } catch (error) {
       console.error(`Erro ao inserir boulder ${boulder.id}:`, error);
@@ -750,8 +752,10 @@ async function main() {
   }
   for (const user of users) {
     try {
-      await prisma.user.create({
-        data: user,
+      await prisma.user.upsert({
+        where: { id: user.id }, // Verifica se o registro já existe pelo ID
+        update: {}, // Caso exista, não altera nada
+        create: user, // Caso não exista, cria o registro
       });
     } catch (error) {
       console.error(`Erro ao inserir boulder ${user.id}:`, error);
