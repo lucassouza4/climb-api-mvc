@@ -7,7 +7,7 @@
     "test": "jest --collect-coverage",
     "dev": "ts-node src/main.ts",
     "build": "tsc ",
-    "vercel-build": "npx prisma migrate deploy"
+    "start": "node dist/main.js"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma",
