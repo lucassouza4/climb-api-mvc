@@ -1,5 +1,5 @@
 {
   "version": 2,
   "builds": [{ "src": "src/main.ts", "user": "@versel/node" }],
-  "routes": [{ "src": "(.*)", "dest": "src/main.ts" }]
+  "routes": [{ "src": "/(.*)", "dest": "src/main.ts" }]
 }
