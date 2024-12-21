@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --collect-coverage",
     "dev": "ts-node src/main.ts",
-    "build": "tsc ",
+    "build": "tsc && prisma generate && prisma migrate deploy",
     "start": "node dist/main.js"
   },
   "prisma": {
