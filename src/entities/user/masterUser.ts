@@ -1,5 +1,6 @@
 import { Permissions, Type } from "../../util/enums/user";
 import { User, UserProps } from "./user";
+import { v4 as uuidv4 } from "uuid";
 
 export class MasterUser extends User {
   private constructor(readonly props: UserProps) {
@@ -13,7 +14,7 @@ export class MasterUser extends User {
     rank?: number
   ) {
     return new MasterUser({
-      id: crypto.randomUUID().toString(),
+      id: uuidv4(),
       type: Type.MASTER,
       name,
       email,

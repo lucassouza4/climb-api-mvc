@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 export type AscentProps = {
   id: string;
   userId: string;
@@ -8,7 +9,7 @@ export class Ascent {
 
   public static build(userId: string, boulderId: string) {
     return new Ascent({
-      id: crypto.randomUUID().toString(),
+      id: uuidv4(),
       userId: userId,
       boulderId: boulderId,
     });

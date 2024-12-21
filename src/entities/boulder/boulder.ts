@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 export type BoulderProps = {
   id: string;
   name: string;
@@ -22,7 +24,7 @@ export class Boulder {
       return new Error("Dificuldade não pode ser menor que zero");
     }
     return new Boulder({
-      id: crypto.randomUUID().toString(),
+      id: uuidv4(),
       name: name.toUpperCase(),
       sector: sector.toUpperCase(),
       city: city.toUpperCase(),
