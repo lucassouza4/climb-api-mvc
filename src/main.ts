@@ -73,8 +73,8 @@ function main() {
     "/ascents",
     ascentController.delete.bind(ascentController)
   );
-
-  apiExpress.start(8000);
+  const port = Number(process.env.PORT) || 8000;
+  apiExpress.start(port);
 }
 
 main();
