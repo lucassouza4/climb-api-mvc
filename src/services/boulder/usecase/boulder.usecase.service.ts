@@ -1,6 +1,12 @@
 import { Boulder } from "../../../entities/boulder/boulder";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import {
+  BoulderAlreadyExistsError,
+  BoulderNotFoundError,
+  BoulderRepositoryError,
+  InvalidBoulderDataError,
+} from "../../../util/errors.util";
+import {
   BoulderOutputDto,
   BoulderService,
   ListBoulderOutputDto,
@@ -26,18 +32,18 @@ export class BoulderUsecaseService implements BoulderService {
       difficulty,
     });
     if (findedBoulder instanceof Boulder) {
-      return new Error("Boulder já cadastrado");
+      return new BoulderAlreadyExistsError();
     }
 
     const boulder = Boulder.build(name, sector, city, difficulty);
     if (boulder instanceof Error) {
-      return new Error(boulder.message);
+      return new InvalidBoulderDataError(boulder.message);
     }
 
     const savedBoulder = await this.repository.save(boulder);
 
     if (savedBoulder instanceof Error) {
-      return new Error(savedBoulder.message);
+      return new BoulderRepositoryError();
     }
     return this.presentOutput(savedBoulder);
   }
@@ -60,7 +66,7 @@ export class BoulderUsecaseService implements BoulderService {
       boulders = await this.repository.get({ name, city, sector, difficulty });
     }
     if (boulders instanceof Error) {
-      return new Error(boulders.message);
+      return new BoulderNotFoundError();
     }
     return this.presentListOutput(boulders);
   }
@@ -69,7 +75,7 @@ export class BoulderUsecaseService implements BoulderService {
     const boulder = await this.repository.getByID(id);
 
     if (boulder instanceof Error) {
-      return new Error(boulder.message);
+      return new BoulderNotFoundError();
     }
 
     return this.presentOutput(boulder);
