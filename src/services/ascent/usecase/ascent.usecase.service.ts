@@ -3,6 +3,18 @@ import { Boulder } from "../../../entities/boulder/boulder";
 import { AscentRepository } from "../../../repositories/ascent/ascent.repository";
 import { BoulderRepository } from "../../../repositories/boulder/boulder.repository";
 import { UserRepository } from "../../../repositories/user/user.repository";
+import {
+  AscentAlreadyExistsError,
+  AscentNotFoundError,
+  AscentRepositoryError,
+  BoulderNotFoundError,
+  BoulderRepositoryError,
+  InvalidAscentDataError,
+  InvalidUserDataError,
+  RedisError,
+  UserNotFoundError,
+  UserRepositoryError,
+} from "../../../util/errors.util";
 import { Payload } from "../../../util/jwt.util";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { AscentService, ListAscentOutputDto } from "../ascent.service";
@@ -36,45 +48,45 @@ export class AscentUsecaseService implements AscentService {
   ): Promise<void | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
-      return new Error("Usuário não encontrado");
+      return new UserNotFoundError();
     }
     if (user.id !== token.id) {
-      return new Error("Usuário não corresponde ao login");
+      return new InvalidUserDataError("Usuário não corresponde ao login");
     }
 
     const boulder = await this.boulderRepository.getByID(boulderId);
     if (boulder instanceof Error) {
-      return new Error("Boulder não encontrado");
+      return new BoulderNotFoundError();
     }
 
     const findedAscent = await this.ascentRepository.get(user.id, boulder.id);
     if (!(findedAscent instanceof Error)) {
-      return new Error("Ascensão já existente");
+      return new AscentAlreadyExistsError();
     }
 
     boulder.encreaseAscents();
     const encreasedBoulder = await this.boulderRepository.update(boulder);
     if (encreasedBoulder instanceof Error) {
-      return new Error(encreasedBoulder.message);
+      return new BoulderRepositoryError();
     }
 
     user.encreaseScore(encreasedBoulder.difficulty);
     const encreasedUser = await this.userRepository.update(user);
     if (encreasedUser instanceof Error) {
       // É PRECISO VOLTAR O INCREMENT DE BOULDER
-      return new Error(encreasedUser.message);
+      return new UserRepositoryError();
     }
 
     const ascent = Ascent.build(encreasedUser.id, encreasedBoulder.id);
     if (ascent instanceof Error) {
-      return new Error(ascent.message);
+      return new InvalidAscentDataError(ascent.message);
     }
 
     this.updateRankingAsync(user.id, user.score);
 
     const savedAscent = await this.ascentRepository.save(ascent);
     if (savedAscent instanceof Error) {
-      return new Error(savedAscent.message);
+      return new AscentRepositoryError();
     }
 
     return;
@@ -85,15 +97,15 @@ export class AscentUsecaseService implements AscentService {
   ): Promise<ListAscentOutputDto | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
-      return new Error("Usuário não encontrado");
+      return new UserNotFoundError();
     }
     if (user.id !== token.id) {
-      return new Error("Usuário não corresponde ao login");
+      return new InvalidUserDataError("Usuário não corresponde ao login");
     }
 
     const ascents = await this.ascentRepository.getAll(userId);
     if (ascents instanceof Error) {
-      return new Error(ascents.message);
+      return new AscentNotFoundError();
     }
 
     const bouldersList = ascents.map((ascent) => {
@@ -102,7 +114,7 @@ export class AscentUsecaseService implements AscentService {
 
     const ascentsBoulders = await this.boulderRepository.getAll(bouldersList);
     if (ascentsBoulders instanceof Error) {
-      return new Error(ascentsBoulders.message);
+      return new BoulderNotFoundError();
     }
 
     return this.listPresentOutput(ascentsBoulders);
@@ -115,16 +127,16 @@ export class AscentUsecaseService implements AscentService {
   ): Promise<void | Error> {
     const user = await this.userRepository.getByID(userId);
     if (user instanceof Error) {
-      return new Error(user.message);
+      return new UserNotFoundError();
     }
 
     if (user.id != token.id) {
-      return new Error("Usuário não correspondente");
+      return new InvalidUserDataError("Usuário não correspondente ao login");
     }
 
     const boulder = await this.boulderRepository.getByID(boulderId);
     if (boulder instanceof Error) {
-      return new Error(boulder.message);
+      return new BoulderNotFoundError();
     }
 
     const deletedAscent = await this.ascentRepository.delete(
@@ -132,19 +144,19 @@ export class AscentUsecaseService implements AscentService {
       boulderId
     );
     if (deletedAscent instanceof Error) {
-      return new Error(deletedAscent.message);
+      return new AscentRepositoryError();
     }
 
     boulder.decreaseAscents();
     const decresedBoulder = await this.boulderRepository.update(boulder);
     if (decresedBoulder instanceof Error) {
-      return new Error(decresedBoulder.message);
+      return new BoulderRepositoryError();
     }
 
     user.decreaseScore(decresedBoulder.difficulty);
     const decreasedUser = await this.userRepository.update(user);
     if (decreasedUser instanceof Error) {
-      return new Error(decreasedUser.message);
+      return new UserRepositoryError();
     }
 
     this.updateRankingAsync(user.id, user.score);
@@ -158,12 +170,11 @@ export class AscentUsecaseService implements AscentService {
       // Remover o usuário do ranking, se já estiver presente, para garantir que sua pontuação seja atualizada
       await this.redisService.zrem("ranking", userId);
 
-      // Atualiza a posição do usuário no ranking (supondo que você está usando um sorted set)
+      // Atualiza a posição do usuário no ranking
       await this.redisService.zadd("ranking", score, userId);
-    } catch (error) {
-      console.error(
-        `Erro ao atualizar o ranking no Redis para user:${userId}`,
-        error
+    } catch {
+      return new RedisError(
+        `Erro ao atualizar o ranking no Redis para user:${userId}`
       );
     }
   }

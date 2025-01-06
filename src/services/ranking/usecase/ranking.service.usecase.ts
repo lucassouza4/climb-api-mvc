@@ -1,5 +1,6 @@
 import { User } from "../../../entities/user/user";
 import { UserRepository } from "../../../repositories/user/user.repository";
+import { UserNotFoundError } from "../../../util/errors.util";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { RankingOutputDto, RankingService } from "../ranking.service";
 
@@ -30,7 +31,7 @@ export class RankingUsecaseService implements RankingService {
 
     const users = await this.userRepository.getAll(rankId);
     if (users instanceof Error) {
-      return new Error("Usuário não encontrado.");
+      return new UserNotFoundError();
     }
 
     return this.presentOutput(users);

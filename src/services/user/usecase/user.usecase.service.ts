@@ -7,6 +7,13 @@ import { Payload } from "../../../util/jwt.util";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { Type } from "../../../util/enums/user";
 import { MasterUser } from "../../../entities/user/masterUser";
+import {
+  InvalidTokenError,
+  InvalidUserDataError,
+  UserAlreadyExistsError,
+  UserNotFoundError,
+  UserRepositoryError,
+} from "../../../util/errors.util";
 
 export class UserUsecaseService implements UserService {
   private constructor(
@@ -25,16 +32,16 @@ export class UserUsecaseService implements UserService {
   ): Promise<UserOutputDto | Error> {
     const findedUser = await this.repository.get(email, password);
     if (findedUser instanceof User) {
-      return new Error("Usuário já cadastrado");
+      return new UserAlreadyExistsError();
     }
     const user = BasicUser.build(name, email, password);
     if (user instanceof Error) {
-      return new Error("Não foi possível criar usuário");
+      return new InvalidUserDataError();
     }
 
     const savedUser = await this.repository.save(user);
     if (savedUser instanceof Error) {
-      return new Error("Não foi possível salvar o usuário");
+      return new UserRepositoryError("Não foi possível salvar o usuário");
     }
     return this.presentOutput(savedUser);
   }
@@ -45,11 +52,11 @@ export class UserUsecaseService implements UserService {
   ): Promise<UserOutputDto | Error> {
     const findedUser = await this.repository.get(email, password);
     if (findedUser instanceof Error) {
-      return new Error("Usuário não encontrado");
+      return new UserNotFoundError();
     }
     const jwtSecret = process.env.JWT_TOKEN;
     if (!jwtSecret) {
-      return new Error("token não definido");
+      return new InvalidTokenError();
     }
     const token = jwt.sign(
       {
@@ -65,11 +72,11 @@ export class UserUsecaseService implements UserService {
   async get(id: string, token: Payload): Promise<UserOutputDto | Error> {
     const user = await this.repository.getByID(id);
     if (user instanceof Error) {
-      return new Error(user.message);
+      return new UserNotFoundError();
     }
 
     if (user.id != token.id) {
-      return new Error("Usuário não correspondente");
+      return new InvalidUserDataError("Usuário não correspondente ao login");
     }
 
     const rank = await this.redisService.getRank("ranking", user.id);
@@ -113,12 +120,12 @@ export class UserUsecaseService implements UserService {
   async list(ids?: string[]): Promise<ListUserOutputDto | Error> {
     const users = await this.repository.getAll(ids);
     if (users instanceof Error) {
-      return new Error("Nenhum usuário encontrado.");
+      return new UserNotFoundError();
     }
     const usersId = users.map((user) => user.id);
     const rank = await this.redisService.getRanksForMembers("ranking", usersId);
     if (rank) {
-      let usersRanked: User[] = [];
+      const usersRanked: User[] = [];
       for (let i = 0; i < users.length; i++) {
         if (users[i].type === Type.BASIC) {
           usersRanked.push(

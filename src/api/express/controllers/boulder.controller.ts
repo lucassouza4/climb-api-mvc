@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { BoulderUsecaseService } from "../../../services/boulder/usecase/boulder.usecase.service";
+import { CustomError } from "../../../util/errors.util";
 
 export class BoulderController {
   private constructor(private readonly service: BoulderUsecaseService) {}
@@ -13,7 +14,8 @@ export class BoulderController {
 
     const result = await this.service.create(name, difficulty, sector, city);
 
-    if (result instanceof Error) res.status(400).json(result.message);
+    if (result instanceof CustomError)
+      res.status(result.statusCode).json(result.message);
     else res.status(201).json(result);
   }
 
@@ -28,7 +30,8 @@ export class BoulderController {
     } else {
       result = await this.service.get(id);
     }
-    if (result instanceof Error) res.status(400).json(result.message);
+    if (result instanceof CustomError)
+      res.status(result.statusCode).json(result.message);
     else res.status(200).json(result);
   }
 }
