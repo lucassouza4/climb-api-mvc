@@ -31,7 +31,10 @@ export class BoulderUsecaseService implements BoulderService {
       sector,
       difficulty,
     });
-    if (findedBoulder instanceof Boulder) {
+    if (
+      findedBoulder instanceof Array &&
+      findedBoulder.every((el) => el instanceof Boulder)
+    ) {
       return new BoulderAlreadyExistsError();
     }
 
