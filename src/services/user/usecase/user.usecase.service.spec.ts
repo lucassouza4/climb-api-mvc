@@ -8,6 +8,7 @@ import {
   UserRepositoryError,
 } from "../../../util/errors.util";
 import { Payload } from "../../../util/jwt.util";
+import { bcryptMock } from "../../../util/mocks/bcrypt";
 import { jwtMock } from "../../../util/mocks/jwt";
 import { userRepositoryMock } from "../../../util/mocks/prismaClient";
 import { redisClientMock } from "../../../util/mocks/redisClient";
@@ -23,6 +24,7 @@ const user = BasicUser.build(
   input.email,
   input.password
 ) as BasicUser;
+
 const savedUser = {
   id: "123",
   name: user.name,
@@ -35,6 +37,7 @@ const savedUser = {
 };
 
 jest.mock("jsonwebtoken", () => jwtMock);
+jest.mock("bcrypt", () => bcryptMock);
 
 beforeEach(() => {
   const redisServiceMock = new RedisService(redisClientMock);
@@ -68,10 +71,7 @@ describe("Create - User usecase service", () => {
     );
 
     expect(result).toEqual(output);
-    expect(userRepositoryMock.get).toHaveBeenCalledWith(
-      input.email,
-      input.password
-    );
+    expect(userRepositoryMock.get).toHaveBeenCalledWith(input.email);
   });
   it("Should not create a finded user", async () => {
     userRepositoryMock.get.mockResolvedValue(user);
@@ -85,12 +85,9 @@ describe("Create - User usecase service", () => {
     );
 
     expect(result).toEqual(output);
-    expect(userRepositoryMock.get).toHaveBeenCalledWith(
-      input.email,
-      input.password
-    );
+    expect(userRepositoryMock.get).toHaveBeenCalledWith(input.email);
   });
-  it("Should create user", async () => {
+  it("Should not save user", async () => {
     const output = new UserRepositoryError("Não foi possível salvar o usuário");
 
     userRepositoryMock.get.mockResolvedValue(new Error());
@@ -103,10 +100,7 @@ describe("Create - User usecase service", () => {
     );
 
     expect(result).toEqual(output);
-    expect(userRepositoryMock.get).toHaveBeenCalledWith(
-      input.email,
-      input.password
-    );
+    expect(userRepositoryMock.get).toHaveBeenCalledWith(input.email);
   });
 });
 
@@ -125,14 +119,12 @@ describe("Login - User usecase service", () => {
     };
     userRepositoryMock.get.mockResolvedValue(savedUser);
     jwtMock.sign.mockReturnValue(token);
+    bcryptMock.compareSync.mockReturnValue(true);
 
     const result = await service.login(input.email, input.password);
 
     expect(result).toEqual(output);
-    expect(userRepositoryMock.get).toHaveBeenCalledWith(
-      input.email,
-      input.password
-    );
+    expect(userRepositoryMock.get).toHaveBeenCalledWith(input.email);
     expect(jwtMock.sign).toHaveBeenCalledWith(
       { id: savedUser.id, permissions },
       process.env.JWT_TOKEN

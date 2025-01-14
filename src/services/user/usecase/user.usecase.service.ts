@@ -1,11 +1,12 @@
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { BasicUser } from "../../../entities/user/basicUser";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { ListUserOutputDto, UserOutputDto, UserService } from "../user.service";
 import { User } from "../../../entities/user/user";
-import jwt from "jsonwebtoken";
 import { Payload } from "../../../util/jwt.util";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
-import { Type } from "../../../util/enums/user";
+import { saltRounds, Type } from "../../../util/enums/user";
 import { MasterUser } from "../../../entities/user/masterUser";
 import {
   InvalidTokenError,
@@ -30,11 +31,13 @@ export class UserUsecaseService implements UserService {
     email: string,
     password: string
   ): Promise<UserOutputDto | Error> {
-    const findedUser = await this.repository.get(email, password);
+    const passwordHash = bcrypt.hashSync(password, saltRounds);
+
+    const findedUser = await this.repository.get(email);
     if (findedUser instanceof User) {
       return new UserAlreadyExistsError();
     }
-    const user = BasicUser.build(name, email, password);
+    const user = BasicUser.build(name, email, passwordHash);
     if (user instanceof Error) {
       return new InvalidUserDataError();
     }
@@ -50,10 +53,21 @@ export class UserUsecaseService implements UserService {
     email: string,
     password: string
   ): Promise<UserOutputDto | Error> {
-    const findedUser = await this.repository.get(email, password);
+    let validPassword = false;
+    const findedUser = await this.repository.get(email);
+
     if (findedUser instanceof Error) {
       return new UserNotFoundError();
     }
+
+    if (findedUser.password) {
+      validPassword = bcrypt.compareSync(password, findedUser.password);
+    }
+
+    if (!validPassword) {
+      return new UserNotFoundError();
+    }
+
     const jwtSecret = process.env.JWT_TOKEN;
     if (!jwtSecret) {
       return new InvalidTokenError();
