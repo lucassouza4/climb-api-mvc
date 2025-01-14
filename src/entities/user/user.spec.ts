@@ -67,10 +67,7 @@ describe("User entity test", () => {
     expect(user.password).toEqual(inputMaster.password);
   });
   it("Should list basic permissions", () => {
-    const basicPermissions = [
-      Permissions.READ_BOULDER,
-      Permissions.UPDATE_BOULDER,
-    ];
+    const basicPermissions = [Permissions.READ_BOULDER];
     const user = BasicUser.build(
       inputBasic.name,
       inputBasic.email,

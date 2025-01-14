@@ -1,12 +1,16 @@
 import { BasicUser } from "../../../entities/user/basicUser";
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { Permissions } from "../../../util/enums/user";
+import {
+  InvalidUserDataError,
+  UserAlreadyExistsError,
+  UserNotFoundError,
+  UserRepositoryError,
+} from "../../../util/errors.util";
 import { Payload } from "../../../util/jwt.util";
 import { jwtMock } from "../../../util/mocks/jwt";
-import {
-  redisClientMock,
-  userRepositoryMock,
-} from "../../../util/mocks/prismaClient";
+import { userRepositoryMock } from "../../../util/mocks/prismaClient";
+import { redisClientMock } from "../../../util/mocks/redisClient";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { UserUsecaseService } from "./user.usecase.service";
 
@@ -25,6 +29,7 @@ const savedUser = {
   email: user.email,
   password: user.password,
   score: user.score,
+  rank: 0,
   type: user.type,
   getPermissions: jest.fn().mockReturnValue(permissions),
 };
@@ -49,6 +54,7 @@ describe("Create - User usecase service", () => {
       name: "teste",
       email: "teste",
       score: 0,
+      rank: 0,
       type: 0,
     };
 
@@ -70,7 +76,7 @@ describe("Create - User usecase service", () => {
   it("Should not create a finded user", async () => {
     userRepositoryMock.get.mockResolvedValue(user);
 
-    const output = new Error("Usuário já cadastrado");
+    const output = new UserAlreadyExistsError();
 
     const result = await service.create(
       input.name,
@@ -85,7 +91,7 @@ describe("Create - User usecase service", () => {
     );
   });
   it("Should create user", async () => {
-    const output = new Error("Não foi possível salvar o usuário");
+    const output = new UserRepositoryError("Não foi possível salvar o usuário");
 
     userRepositoryMock.get.mockResolvedValue(new Error());
     userRepositoryMock.save.mockResolvedValue(new Error());
@@ -114,6 +120,7 @@ describe("Login - User usecase service", () => {
       email: savedUser.email,
       score: savedUser.score,
       type: savedUser.type,
+      rank: savedUser.rank,
       token,
     };
     userRepositoryMock.get.mockResolvedValue(savedUser);
@@ -132,7 +139,7 @@ describe("Login - User usecase service", () => {
     );
   });
   it("Should not found user for login", async () => {
-    const output = new Error("Usuário não encontrado");
+    const output = new UserNotFoundError();
     userRepositoryMock.get.mockResolvedValue(new Error());
 
     const result = await service.login(input.email, input.password);
@@ -154,6 +161,7 @@ describe("Get - User usecase service", () => {
       email: savedUser.email,
       score: savedUser.score,
       type: savedUser.type,
+      rank: savedUser.rank,
     };
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
@@ -184,7 +192,9 @@ describe("Get - User usecase service", () => {
       permissions: [],
     };
 
-    const output = new Error("Usuário não correspondente");
+    const output = new InvalidUserDataError(
+      "Usuário não correspondente ao login"
+    );
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
 

@@ -3,11 +3,17 @@ import { BoulderRepository } from "../../../repositories/boulder/boulder.reposit
 import { UserRepository } from "../../../repositories/user/user.repository";
 import { Permissions } from "../../../util/enums/user";
 import {
+  AscentAlreadyExistsError,
+  BoulderNotFoundError,
+  InvalidUserDataError,
+  UserNotFoundError,
+} from "../../../util/errors.util";
+import {
   ascentRepositoryMock,
   boulderRepositoryMock,
-  redisClientMock,
   userRepositoryMock,
 } from "../../../util/mocks/prismaClient";
+import { redisClientMock } from "../../../util/mocks/redisClient";
 import { RedisService } from "../../redis/usecase/redis.usecase.service";
 import { AscentUsecaseService } from "./ascent.usecase.service";
 
@@ -91,7 +97,7 @@ describe("Create - Ascent usecase service", () => {
     expect(result).not.toBeInstanceOf(Error);
   });
   it("Should not found user", async () => {
-    const output = new Error("Usuário não encontrado");
+    const output = new UserNotFoundError();
     userRepositoryMock.getByID.mockResolvedValue(new Error());
 
     const result = await service.create(
@@ -102,7 +108,7 @@ describe("Create - Ascent usecase service", () => {
     expect(result).toEqual(output);
   });
   it("Should not validate user", async () => {
-    const output = new Error("Usuário não corresponde ao login");
+    const output = new InvalidUserDataError("Usuário não corresponde ao login");
     const token = {
       id: "teste",
       permissions: [],
@@ -113,7 +119,7 @@ describe("Create - Ascent usecase service", () => {
     expect(result).toEqual(output);
   });
   it("Should not found boulder", async () => {
-    const output = new Error("Boulder não encontrado");
+    const output = new BoulderNotFoundError();
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
     boulderRepositoryMock.getByID.mockResolvedValue(new Error());
@@ -126,7 +132,7 @@ describe("Create - Ascent usecase service", () => {
     expect(result).toEqual(output);
   });
   it("Should find ascent", async () => {
-    const output = new Error("Ascensão já existente");
+    const output = new AscentAlreadyExistsError();
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
     boulderRepositoryMock.getByID.mockResolvedValue(savedBoulder);
@@ -208,7 +214,7 @@ describe("Get - Ascent usecase service", () => {
   it("Should not found user", async () => {
     userRepositoryMock.getByID.mockResolvedValue(new Error());
 
-    const output = new Error("Usuário não encontrado");
+    const output = new UserNotFoundError();
 
     const result = await service.get(input.userId, input.token);
 
@@ -222,7 +228,7 @@ describe("Get - Ascent usecase service", () => {
 
     userRepositoryMock.getByID.mockResolvedValue(savedUser);
 
-    const output = new Error("Usuário não corresponde ao login");
+    const output = new InvalidUserDataError("Usuário não corresponde ao login");
 
     const result = await service.get(input.userId, token);
 

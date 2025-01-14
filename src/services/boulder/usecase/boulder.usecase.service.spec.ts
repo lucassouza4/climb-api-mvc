@@ -65,12 +65,9 @@ describe("Create - Boulder usecase service", () => {
       city: "teste",
       difficulty: 0,
     };
-    const savedBoulder = Boulder.build(
-      input.name,
-      input.sector,
-      input.city,
-      input.difficulty
-    );
+    const savedBoulder = [
+      Boulder.build(input.name, input.sector, input.city, input.difficulty),
+    ];
 
     boulderRepositoryMock.get.mockResolvedValue(savedBoulder);
 
