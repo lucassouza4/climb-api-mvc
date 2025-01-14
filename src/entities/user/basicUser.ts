@@ -29,7 +29,8 @@ export class BasicUser extends User {
     name: string,
     email: string,
     score: number,
-    rank?: number
+    rank?: number,
+    password?: string
   ) {
     return new BasicUser({
       id,
@@ -38,6 +39,7 @@ export class BasicUser extends User {
       email,
       score,
       rank,
+      password,
     });
   }
 

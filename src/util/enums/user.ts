@@ -9,3 +9,5 @@ export enum Type {
   BASIC,
   MASTER,
 }
+
+export const saltRounds = 10;

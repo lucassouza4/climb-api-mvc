@@ -46,12 +46,11 @@ export class UserRepositoryPrisma implements UserRepository {
       return new Error("Unknown error occurred.");
     }
   }
-  public async get(email: string, password: string): Promise<User | Error> {
+  public async get(email: string): Promise<User | Error> {
     try {
       const findedUser = await this.prisma.user.findUnique({
         where: {
           email,
-          password,
         },
       });
 
@@ -61,7 +60,8 @@ export class UserRepositoryPrisma implements UserRepository {
           findedUser.name,
           findedUser.email,
           findedUser.score,
-          findedUser.rank
+          findedUser.rank,
+          findedUser.password
         );
       }
       return MasterUser.with(
@@ -69,7 +69,8 @@ export class UserRepositoryPrisma implements UserRepository {
         findedUser.name,
         findedUser.email,
         findedUser.score,
-        findedUser.rank
+        findedUser.rank,
+        findedUser.password
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
