@@ -34,6 +34,8 @@ export class RankingUsecaseService implements RankingService {
       return new UserNotFoundError();
     }
 
+    users.sort((a, b) => b.score - a.score);
+
     return this.presentOutput(users);
   }
 

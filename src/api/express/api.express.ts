@@ -37,6 +37,13 @@ export class ApiExpress implements Api {
     this.app.put(path, handle);
   }
 
+  public addPatchRoute(
+    path: string,
+    handle: (req: Request, res: Response) => Promise<void>
+  ): void {
+    this.app.patch(path, handle);
+  }
+
   public addDeleteRoute(
     path: string,
     handle: (req: Request, res: Response) => Promise<void>

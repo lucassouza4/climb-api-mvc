@@ -83,6 +83,27 @@ export class AscentNotFoundError extends CustomError {
   }
 }
 
+export class InvalidFriendshipDataError extends CustomError {
+  constructor(details?: string) {
+    super(
+      `Dados inválidos para pedido de amizade. ${details || ""}`.trim(),
+      400
+    ); // 400 Bad Request
+  }
+}
+
+export class FriendshipRepositoryError extends CustomError {
+  constructor(details?: string) {
+    super(`Erro no repositório de amizades. ${details || ""}`.trim(), 500); // 500 Internal Server Error
+  }
+}
+
+export class FriendshipNotFoundError extends CustomError {
+  constructor() {
+    super("Amizade não encontrada.", 404); // 404 Not Found
+  }
+}
+
 export class InvalidTokenError extends CustomError {
   constructor() {
     super("token não definido.", 400); // 400 Bad Request
