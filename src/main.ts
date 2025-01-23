@@ -1,14 +1,17 @@
 import { ApiExpress } from "./api/express/api.express";
 import { AscentController } from "./api/express/controllers/ascent.controller";
 import { BoulderController } from "./api/express/controllers/boulder.controller";
+import { FriendshipController } from "./api/express/controllers/friendship.controller";
 import { RankingController } from "./api/express/controllers/ranking.controller";
 import { UserController } from "./api/express/controllers/user.controller";
 import createRedisClient from "./redis";
 import { AscentRepositoryPrisma } from "./repositories/ascent/prisma/ascent.repository.prisma";
 import { BoulderRepositoryPrisma } from "./repositories/boulder/prisma/boulder.repository.prisma";
+import { FriendshipRepositoryPrisma } from "./repositories/friendship/prisma/friendship.repository.prisma";
 import { UserRepositoryPrisma } from "./repositories/user/prisma/user.repository.prisma";
 import { AscentUsecaseService } from "./services/ascent/usecase/ascent.usecase.service";
 import { BoulderUsecaseService } from "./services/boulder/usecase/boulder.usecase.service";
+import { FriendshipUsecaseService } from "./services/friendship/usecase/friendship.usecase.service";
 import { RankingUsecaseService } from "./services/ranking/usecase/ranking.service.usecase";
 import { RedisService } from "./services/redis/usecase/redis.usecase.service";
 import { UserUsecaseService } from "./services/user/usecase/user.usecase.service";
@@ -37,6 +40,13 @@ function main() {
   );
   const ascentController = AscentController.build(ascentService);
 
+  const friendshipRepository = FriendshipRepositoryPrisma.build(prisma);
+  const friendshipService = FriendshipUsecaseService.build(
+    friendshipRepository,
+    userRepository
+  );
+  const friendshipController = FriendshipController.build(friendshipService);
+
   const rankingService = RankingUsecaseService.build(
     userRepository,
     redisService
@@ -56,6 +66,14 @@ function main() {
     "/users/create",
     userController.create.bind(userController)
   );
+  apiExpress.addPostRoute(
+    "/friendship/create",
+    friendshipController.create.bind(friendshipController)
+  );
+  apiExpress.addGetRoute(
+    "/friendships",
+    friendshipController.get.bind(friendshipController)
+  );
   apiExpress.addGetRoute(
     "/boulders",
     boulderController.get.bind(boulderController)
@@ -68,6 +86,14 @@ function main() {
   apiExpress.addGetRoute(
     "/ranking",
     rankingController.get.bind(rankingController)
+  );
+  apiExpress.addPatchRoute(
+    "/friendships",
+    friendshipController.update.bind(friendshipController)
+  );
+  apiExpress.addDeleteRoute(
+    "/friendships",
+    friendshipController.delete.bind(friendshipController)
   );
   apiExpress.addDeleteRoute(
     "/ascents",
